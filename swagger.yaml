@@ -31,6 +31,53 @@ paths:
                     type: array
                     items:
                       type: string
+  "/api/v1/documents/{id}":
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    delete:
+      summary: Delete a document
+      tags:
+      - Documents
+      security:
+      - bearer: []
+      - oauth2:
+        - documents:write
+      responses:
+        '204':
+          description: deleted
+        '403':
+          description: missing documents:write scope
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '404':
+          description: wrong organization
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+    get:
+      summary: Show a document
+      tags:
+      - Documents
+      security:
+      - bearer: []
+      - oauth2:
+        - documents:read
+      responses:
+        '200':
+          description: success with download_url
+        '404':
+          description: wrong organization
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
   "/api/v1/entities/{entity_id}/documents/import":
     parameters:
     - name: entity_id
@@ -88,30 +135,6 @@ paths:
           description: success
         '404':
           description: entity in another organization
-          content:
-            application/json:
-              schema:
-                "$ref": "#/components/schemas/Error"
-  "/api/v1/documents/{id}":
-    parameters:
-    - name: id
-      in: path
-      required: true
-      schema:
-        type: string
-    get:
-      summary: Show a document
-      tags:
-      - Documents
-      security:
-      - bearer: []
-      - oauth2:
-        - documents:read
-      responses:
-        '200':
-          description: success with download_url
-        '404':
-          description: wrong organization
           content:
             application/json:
               schema:
