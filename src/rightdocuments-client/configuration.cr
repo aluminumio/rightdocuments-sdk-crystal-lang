@@ -217,7 +217,8 @@ module RightDocuments
 
     # Returns Auth Settings hash for api client.
     def auth_settings
-      {} of String => Hash(Symbol, String)
+      Hash{
+      }
     end
 
     # Returns an array of Server setting
