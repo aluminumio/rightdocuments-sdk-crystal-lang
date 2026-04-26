@@ -1,0 +1,8 @@
+node_modules/
+.openapi-generator/
+.openapi-generator-ignore
+/lib/
+/.shards/
+/bin/
+*.dwarf
+.crystal/
