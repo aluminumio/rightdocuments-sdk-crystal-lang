@@ -39,9 +39,81 @@ module RightDocuments
     @[JSON::Field(key: "ein", type: String?, nillable: true, emit_null: false)]
     property ein : String?
 
+    @[JSON::Field(key: "duns", type: String?, nillable: true, emit_null: false)]
+    property duns : String?
+
+    @[JSON::Field(key: "website_url", type: String?, nillable: true, emit_null: false)]
+    property website_url : String?
+
+    @[JSON::Field(key: "address", type: String?, nillable: true, emit_null: false)]
+    property address : String?
+
+    @[JSON::Field(key: "county", type: String?, nillable: true, emit_null: false)]
+    property county : String?
+
+    @[JSON::Field(key: "phone", type: String?, nillable: true, emit_null: false)]
+    property phone : String?
+
+    @[JSON::Field(key: "file_number", type: String?, nillable: true, emit_null: false)]
+    property file_number : String?
+
+    @[JSON::Field(key: "fiscal_year_end_month_day", type: String?, nillable: true, emit_null: false)]
+    property fiscal_year_end_month_day : String?
+
+    @[JSON::Field(key: "shares_authorized", type: Int32?, nillable: true, emit_null: false)]
+    property shares_authorized : Int32?
+
+    @[JSON::Field(key: "registered_agent_name", type: String?, nillable: true, emit_null: false)]
+    property registered_agent_name : String?
+
+    @[JSON::Field(key: "registered_agent_address", type: String?, nillable: true, emit_null: false)]
+    property registered_agent_address : String?
+
+    @[JSON::Field(key: "incorporator_name", type: String?, nillable: true, emit_null: false)]
+    property incorporator_name : String?
+
+    @[JSON::Field(key: "incorporator_address", type: String?, nillable: true, emit_null: false)]
+    property incorporator_address : String?
+
+    @[JSON::Field(key: "incorporator_resigned_on", type: String?, nillable: true, emit_null: false)]
+    property incorporator_resigned_on : String?
+
+    @[JSON::Field(key: "officer_1_name", type: String?, nillable: true, emit_null: false)]
+    property officer_1_name : String?
+
+    @[JSON::Field(key: "officer_1_title", type: String?, nillable: true, emit_null: false)]
+    property officer_1_title : String?
+
+    @[JSON::Field(key: "officer_1_email", type: String?, nillable: true, emit_null: false)]
+    property officer_1_email : String?
+
+    @[JSON::Field(key: "officer_2_name", type: String?, nillable: true, emit_null: false)]
+    property officer_2_name : String?
+
+    @[JSON::Field(key: "officer_2_title", type: String?, nillable: true, emit_null: false)]
+    property officer_2_title : String?
+
+    @[JSON::Field(key: "officer_2_email", type: String?, nillable: true, emit_null: false)]
+    property officer_2_email : String?
+
+    @[JSON::Field(key: "officer_3_name", type: String?, nillable: true, emit_null: false)]
+    property officer_3_name : String?
+
+    @[JSON::Field(key: "officer_3_title", type: String?, nillable: true, emit_null: false)]
+    property officer_3_title : String?
+
+    @[JSON::Field(key: "officer_3_email", type: String?, nillable: true, emit_null: false)]
+    property officer_3_email : String?
+
+    @[JSON::Field(key: "created_at", type: String?, nillable: true, emit_null: false)]
+    property created_at : String?
+
+    @[JSON::Field(key: "updated_at", type: String?, nillable: true, emit_null: false)]
+    property updated_at : String?
+
     # Initializes the object
     # @param [Hash] attributes Model attributes in the form of hash
-    def initialize(@id : String, @name : String, @entity_type : String, @state : String, @status : String, @formation_date : String?, @ein : String?)
+    def initialize(@id : String, @name : String, @entity_type : String, @state : String, @status : String, @formation_date : String?, @ein : String?, @duns : String?, @website_url : String?, @address : String?, @county : String?, @phone : String?, @file_number : String?, @fiscal_year_end_month_day : String?, @shares_authorized : Int32?, @registered_agent_name : String?, @registered_agent_address : String?, @incorporator_name : String?, @incorporator_address : String?, @incorporator_resigned_on : String?, @officer_1_name : String?, @officer_1_title : String?, @officer_1_email : String?, @officer_2_name : String?, @officer_2_title : String?, @officer_2_email : String?, @officer_3_name : String?, @officer_3_title : String?, @officer_3_email : String?, @created_at : String?, @updated_at : String?)
     end
 
     # Show invalid properties with the reasons. Usually used together with valid?
@@ -68,7 +140,31 @@ module RightDocuments
           state == o.state &&
           status == o.status &&
           formation_date == o.formation_date &&
-          ein == o.ein
+          ein == o.ein &&
+          duns == o.duns &&
+          website_url == o.website_url &&
+          address == o.address &&
+          county == o.county &&
+          phone == o.phone &&
+          file_number == o.file_number &&
+          fiscal_year_end_month_day == o.fiscal_year_end_month_day &&
+          shares_authorized == o.shares_authorized &&
+          registered_agent_name == o.registered_agent_name &&
+          registered_agent_address == o.registered_agent_address &&
+          incorporator_name == o.incorporator_name &&
+          incorporator_address == o.incorporator_address &&
+          incorporator_resigned_on == o.incorporator_resigned_on &&
+          officer_1_name == o.officer_1_name &&
+          officer_1_title == o.officer_1_title &&
+          officer_1_email == o.officer_1_email &&
+          officer_2_name == o.officer_2_name &&
+          officer_2_title == o.officer_2_title &&
+          officer_2_email == o.officer_2_email &&
+          officer_3_name == o.officer_3_name &&
+          officer_3_title == o.officer_3_title &&
+          officer_3_email == o.officer_3_email &&
+          created_at == o.created_at &&
+          updated_at == o.updated_at
     end
 
     # @see the `==` method
@@ -80,7 +176,7 @@ module RightDocuments
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [id, name, entity_type, state, status, formation_date, ein].hash
+      [id, name, entity_type, state, status, formation_date, ein, duns, website_url, address, county, phone, file_number, fiscal_year_end_month_day, shares_authorized, registered_agent_name, registered_agent_address, incorporator_name, incorporator_address, incorporator_resigned_on, officer_1_name, officer_1_title, officer_1_email, officer_2_name, officer_2_title, officer_2_email, officer_3_name, officer_3_title, officer_3_email, created_at, updated_at].hash
     end
 
     # Builds the object from hash

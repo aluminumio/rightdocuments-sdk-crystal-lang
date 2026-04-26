@@ -281,6 +281,76 @@ paths:
                       ein:
                         type: string
                         nullable: true
+                      duns:
+                        type: string
+                        nullable: true
+                      website_url:
+                        type: string
+                        nullable: true
+                      address:
+                        type: string
+                        nullable: true
+                      county:
+                        type: string
+                        nullable: true
+                      phone:
+                        type: string
+                        nullable: true
+                      file_number:
+                        type: string
+                        nullable: true
+                      fiscal_year_end_month_day:
+                        type: string
+                        nullable: true
+                      shares_authorized:
+                        type: integer
+                        nullable: true
+                      registered_agent_name:
+                        type: string
+                        nullable: true
+                      registered_agent_address:
+                        type: string
+                        nullable: true
+                      incorporator_name:
+                        type: string
+                        nullable: true
+                      incorporator_address:
+                        type: string
+                        nullable: true
+                      incorporator_resigned_on:
+                        type: string
+                        nullable: true
+                      officer_1_name:
+                        type: string
+                        nullable: true
+                      officer_1_title:
+                        type: string
+                        nullable: true
+                      officer_1_email:
+                        type: string
+                        nullable: true
+                      officer_2_name:
+                        type: string
+                        nullable: true
+                      officer_2_title:
+                        type: string
+                        nullable: true
+                      officer_2_email:
+                        type: string
+                        nullable: true
+                      officer_3_name:
+                        type: string
+                        nullable: true
+                      officer_3_title:
+                        type: string
+                        nullable: true
+                      officer_3_email:
+                        type: string
+                        nullable: true
+                      created_at:
+                        type: string
+                      updated_at:
+                        type: string
         '404':
           description: entity belongs to another organization
           content:
