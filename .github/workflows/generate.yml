@@ -1,0 +1,99 @@
+name: Regenerate SDK from Swagger
+
+on:
+  repository_dispatch:
+    types: [swagger-updated]
+  workflow_dispatch:
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.RELEASE_PAT }}
+
+      - name: Fetch latest swagger.yaml
+        env:
+          GH_TOKEN: ${{ secrets.RELEASE_PAT }}
+        run: |
+          gh api repos/aluminumio/rightdocuments/contents/swagger/v1/swagger.yaml \
+            --jq '.content' | base64 -d > swagger.yaml
+          echo "Fetched swagger.yaml ($(wc -l < swagger.yaml) lines)"
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Clean generated files
+        run: |
+          rm -rf src/rightdocuments-client src/rightdocuments-client.cr
+          echo "Cleaned generated files"
+
+      - name: Determine next version
+        id: version
+        run: |
+          git fetch --tags
+          LATEST=$(git tag -l 'v*' | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -1)
+          LATEST="${LATEST:-v0.0.0}"
+          MAJOR=$(echo "$LATEST" | sed 's/v//' | cut -d. -f1)
+          MINOR=$(echo "$LATEST" | sed 's/v//' | cut -d. -f2)
+          PATCH=$(echo "$LATEST" | sed 's/v//' | cut -d. -f3)
+          NEXT_VER="${MAJOR}.${MINOR}.$((PATCH + 1))"
+          echo "bare=${NEXT_VER}" >> $GITHUB_OUTPUT
+          echo "tag=v${NEXT_VER}" >> $GITHUB_OUTPUT
+          echo "Next SDK version: v${NEXT_VER}"
+
+      - name: Generate SDK
+        env:
+          SDK_VERSION: ${{ steps.version.outputs.bare }}
+        run: |
+          npx @openapitools/openapi-generator-cli generate \
+            -i swagger.yaml \
+            -g crystal \
+            -o . \
+            --skip-validate-spec \
+            --git-host github.com \
+            --git-user-id aluminumio \
+            --git-repo-id rightdocuments-sdk-crystal-lang \
+            --additional-properties \
+              "shardName=rightdocuments-client,moduleName=RightDocuments,shardVersion=${SDK_VERSION}"
+
+      - name: Patch generator output (Hash{} bug)
+        run: |
+          # openapi-generator-cli 7.10.0 emits invalid Crystal `Hash{}` literal
+          # in configuration.cr#auth_settings when no auth flows are defined.
+          # Replace with a typed empty hash. Idempotent.
+          CONFIG="src/rightdocuments-client/configuration.cr"
+          if [ -f "$CONFIG" ]; then
+            sed -i 's/Hash{}/{} of String => Hash(Symbol, String)/g' "$CONFIG"
+            echo "Patched $CONFIG"
+          fi
+
+      - name: Commit, tag, and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+          git commit -m "Regenerate SDK from latest swagger.yaml"
+          git tag "${{ steps.version.outputs.tag }}"
+          git push origin main --tags
+
+      - name: Dispatch to CLI
+        if: success()
+        uses: peter-evans/repository-dispatch@v4
+        with:
+          token: ${{ secrets.RELEASE_PAT }}
+          repository: aluminumio/rightdocuments-cli
+          event-type: sdk-updated
+          client-payload: '{"sdk": "crystal"}'
