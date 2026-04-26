@@ -51,7 +51,7 @@ module RightDocuments
       return_type = "ApiV1EntitiesGet200Response"
 
       # auth_names
-      auth_names = [] of String
+      auth_names = ["bearer"]
 
       data, status_code, headers = @api_client.call_api(:GET,
                                                         local_var_path,
@@ -104,7 +104,7 @@ module RightDocuments
       return_type = nil
 
       # auth_names
-      auth_names = [] of String
+      auth_names = ["bearer"]
 
       data, status_code, headers = @api_client.call_api(:POST,
                                                         local_var_path,
