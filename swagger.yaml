@@ -245,6 +245,7 @@ paths:
       tags:
       - Entities
       security:
+      - bearer: []
       - oauth2:
         - documents:read
       responses:

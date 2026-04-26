@@ -3,8 +3,6 @@
 README.md
 git_push.sh
 shard.yml
-spec/models/api_v1_entities_id_get200_response_entity_spec.cr
-spec/models/api_v1_entities_id_get200_response_spec.cr
 spec/spec_helper.cr
 src/rightdocuments-client.cr
 src/rightdocuments-client/api/catalog_api.cr
