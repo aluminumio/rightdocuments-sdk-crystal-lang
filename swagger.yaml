@@ -1,0 +1,277 @@
+---
+openapi: 3.0.1
+info:
+  title: RightDocuments API
+  version: v1
+paths:
+  "/api/v1/entities/{entity_id}/documents/import":
+    parameters:
+    - name: entity_id
+      in: path
+      required: true
+      schema:
+        type: string
+    post:
+      summary: Import a PDF as an executed document
+      tags:
+      - Documents
+      security:
+      - oauth2:
+        - documents:write
+      parameters: []
+      responses:
+        '201':
+          description: imported
+        '403':
+          description: missing documents:write scope
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '422':
+          description: no file
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: file
+        required: true
+  "/api/v1/entities/{entity_id}/documents":
+    parameters:
+    - name: entity_id
+      in: path
+      required: true
+      schema:
+        type: string
+    get:
+      summary: List documents for an entity
+      tags:
+      - Documents
+      security:
+      - oauth2:
+        - documents:read
+      responses:
+        '200':
+          description: success
+        '404':
+          description: entity in another organization
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+  "/api/v1/documents/{id}":
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    get:
+      summary: Show a document
+      tags:
+      - Documents
+      security:
+      - oauth2:
+        - documents:read
+      responses:
+        '200':
+          description: success with download_url
+        '404':
+          description: wrong organization
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+  "/api/v1/entities":
+    get:
+      summary: List entities in the token's organization
+      tags:
+      - Entities
+      security:
+      - oauth2:
+        - documents:read
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  entities:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                      - id
+                      - name
+                      - entity_type
+                      - state
+                      - status
+                      properties:
+                        id:
+                          type: string
+                        name:
+                          type: string
+                        entity_type:
+                          type: string
+                        state:
+                          type: string
+                        status:
+                          type: string
+                        formation_date:
+                          type: string
+                          nullable: true
+    post:
+      summary: Create an entity in the token's organization
+      tags:
+      - Entities
+      security:
+      - oauth2:
+        - documents:write
+      parameters: []
+      responses:
+        '201':
+          description: created
+        '422':
+          description: validation errors
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '403':
+          description: missing documents:write scope
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - entity
+              properties:
+                entity:
+                  type: object
+                  required:
+                  - name
+                  - entity_type
+                  - formation_state
+                  properties:
+                    name:
+                      type: string
+                    entity_type:
+                      type: string
+                      enum:
+                      - c-corp
+                      - s-corp
+                      - llc
+                      - partnership
+                    formation_state:
+                      type: string
+                      enum:
+                      - CA
+                      - DE
+                    status:
+                      type: string
+                      enum:
+                      - unformed
+                      - incorporation_filed
+                      - incorporation_certified
+                      - operating
+                      - dissolution_filed
+                      - dissolution_certified
+                    formation_date:
+                      type: string
+                      format: date
+                      nullable: true
+                    ein:
+                      type: string
+                      nullable: true
+                    address:
+                      type: string
+                      nullable: true
+                    phone:
+                      type: string
+                      nullable: true
+  "/api/v1/me":
+    get:
+      summary: Returns the user and the token-bound organization
+      tags:
+      - Me
+      security:
+      - oauth2:
+        - documents:read
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      email:
+                        type: string
+                      name:
+                        type: string
+                        nullable: true
+                  organization:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      name:
+                        type: string
+                      google_domain:
+                        type: string
+        '401':
+          description: missing token
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+servers:
+- url: https://app.rightdocuments.com
+- url: http://localhost:3000
+components:
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      flows:
+        urn:ietf:params:oauth:grant-type:device_code:
+          tokenUrl: "/oauth/token"
+          scopes:
+            documents:read: Read documents
+            documents:write: Create/import documents
+  schemas:
+    Error:
+      type: object
+      required:
+      - error
+      - message
+      - status
+      properties:
+        error:
+          type: string
+          example: not_found
+        message:
+          type: string
+        status:
+          type: integer
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
