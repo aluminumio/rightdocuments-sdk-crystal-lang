@@ -232,6 +232,66 @@ paths:
                     phone:
                       type: string
                       nullable: true
+  "/api/v1/entities/{id}":
+    parameters:
+    - name: id
+      in: path
+      description: Entity UUID
+      required: true
+      schema:
+        type: string
+    get:
+      summary: Show an entity in the token's organization
+      tags:
+      - Entities
+      security:
+      - oauth2:
+        - documents:read
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  entity:
+                    type: object
+                    required:
+                    - id
+                    - name
+                    - entity_type
+                    - state
+                    - status
+                    properties:
+                      id:
+                        type: string
+                      name:
+                        type: string
+                      entity_type:
+                        type: string
+                      state:
+                        type: string
+                      status:
+                        type: string
+                      formation_date:
+                        type: string
+                        nullable: true
+                      ein:
+                        type: string
+                        nullable: true
+        '404':
+          description: entity belongs to another organization
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '401':
+          description: missing token
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
   "/api/v1/me":
     get:
       summary: Returns the user and the token-bound organization

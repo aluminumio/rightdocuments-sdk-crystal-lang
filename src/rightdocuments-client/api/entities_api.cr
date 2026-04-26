@@ -68,6 +68,63 @@ module RightDocuments
       return ApiV1EntitiesGet200Response.from_json(data), status_code, headers
     end
 
+    # Show an entity in the token's organization
+    # @param id [String] Entity UUID
+    # @return [ApiV1EntitiesIdGet200Response]
+    def api_v1_entities_id_get(id : String)
+      data, _status_code, _headers = api_v1_entities_id_get_with_http_info(id)
+      data
+    end
+
+    # Show an entity in the token&#39;s organization
+    # @param id [String] Entity UUID
+    # @return [Array<(ApiV1EntitiesIdGet200Response, Integer, Hash)>] ApiV1EntitiesIdGet200Response data, response status code and response headers
+    def api_v1_entities_id_get_with_http_info(id : String)
+      if @api_client.config.debugging
+        Log.debug {"Calling API: EntitiesApi.api_v1_entities_id_get ..."}
+      end
+      # verify the required parameter "id" is set
+      if @api_client.config.client_side_validation && id.nil?
+        raise ArgumentError.new("Missing the required parameter 'id' when calling EntitiesApi.api_v1_entities_id_get")
+      end
+      # resource path
+      local_var_path = "/api/v1/entities/{id}".sub("{" + "id" + "}", URI.encode_path(id.to_s))
+
+      # query parameters
+      query_params = Hash(String, String).new
+
+      # header parameters
+      header_params = Hash(String, String).new
+      # HTTP header "Accept" (if needed)
+      header_params["Accept"] = @api_client.select_header_accept(["application/json"])
+
+      # form parameters
+      form_params = Hash(Symbol, (String | ::File)).new
+
+      # http body (model)
+      post_body = nil
+
+      # return_type
+      return_type = "ApiV1EntitiesIdGet200Response"
+
+      # auth_names
+      auth_names = [] of String
+
+      data, status_code, headers = @api_client.call_api(:GET,
+                                                        local_var_path,
+                                                        :"EntitiesApi.api_v1_entities_id_get",
+                                                        return_type,
+                                                        post_body,
+                                                        auth_names,
+                                                        header_params,
+                                                        query_params,
+                                                        form_params)
+      if @api_client.config.debugging
+        Log.debug {"API called: EntitiesApi#api_v1_entities_id_get\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"}
+      end
+      return ApiV1EntitiesIdGet200Response.from_json(data), status_code, headers
+    end
+
     # Create an entity in the token's organization
     # @return [nil]
     def api_v1_entities_post(api_v1_entities_post_request : ApiV1EntitiesPostRequest?)
