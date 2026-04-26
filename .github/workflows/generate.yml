@@ -65,17 +65,6 @@ jobs:
             --additional-properties \
               "shardName=rightdocuments-client,moduleName=RightDocuments,shardVersion=${SDK_VERSION}"
 
-      - name: Patch generator output (Hash{} bug)
-        run: |
-          # openapi-generator-cli 7.10.0 emits invalid Crystal `Hash{}` literal
-          # in configuration.cr#auth_settings when no auth flows are defined.
-          # Replace with a typed empty hash. Idempotent.
-          CONFIG="src/rightdocuments-client/configuration.cr"
-          if [ -f "$CONFIG" ]; then
-            sed -i 's/Hash{}/{} of String => Hash(Symbol, String)/g' "$CONFIG"
-            echo "Patched $CONFIG"
-          fi
-
       - name: Commit, tag, and push
         run: |
           git config user.name "github-actions[bot]"
