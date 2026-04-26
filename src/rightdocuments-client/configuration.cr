@@ -218,6 +218,12 @@ module RightDocuments
     # Returns Auth Settings hash for api client.
     def auth_settings
       Hash{
+        "bearer" => {
+          type: "bearer",
+          in: "header",
+          key: "Authorization",
+          value: "Bearer #{access_token}"
+        },
       }
     end
 

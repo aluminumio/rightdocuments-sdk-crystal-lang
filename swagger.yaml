@@ -244,6 +244,8 @@ paths:
 servers:
 - url: https://app.rightdocuments.com
 - url: http://localhost:3000
+security:
+- bearer: []
 components:
   securitySchemes:
     oauth2:
@@ -254,6 +256,10 @@ components:
           scopes:
             documents:read: Read documents
             documents:write: Create/import documents
+    bearer:
+      type: http
+      scheme: bearer
+      description: Bearer token obtained via OAuth2 device flow (see oauth2 scheme).
   schemas:
     Error:
       type: object
