@@ -13,61 +13,22 @@ require "json"
 require "time"
 
 module RightDocuments
-  class ApiV1EntitiesPostRequestEntity
+  class ApiV1CatalogGet200Response
     include JSON::Serializable
 
-    # Required properties
-    @[JSON::Field(key: "name", type: String, nillable: false, emit_null: false)]
-    property name : String
-
-    @[JSON::Field(key: "entity_type", type: String, nillable: false, emit_null: false)]
-    property entity_type : String
-
-    @[JSON::Field(key: "formation_state", type: String, nillable: false, emit_null: false)]
-    property formation_state : String
-
     # Optional properties
-    @[JSON::Field(key: "status", type: String?, nillable: true, emit_null: false)]
-    property status : String?
+    @[JSON::Field(key: "entity_types", type: Array(String)?, nillable: true, emit_null: false)]
+    property entity_types : Array(String)?
 
-    @[JSON::Field(key: "formation_date", type: Time?, nillable: true, emit_null: false)]
-    property formation_date : Time?
+    @[JSON::Field(key: "formation_states", type: Array(String)?, nillable: true, emit_null: false)]
+    property formation_states : Array(String)?
 
-    @[JSON::Field(key: "ein", type: String?, nillable: true, emit_null: false)]
-    property ein : String?
-
-    @[JSON::Field(key: "address", type: String?, nillable: true, emit_null: false)]
-    property address : String?
-
-    @[JSON::Field(key: "phone", type: String?, nillable: true, emit_null: false)]
-    property phone : String?
-
-    class EnumAttributeValidator
-      getter datatype : String
-      getter allowable_values : Array(String)
-
-      def initialize(datatype, allowable_values)
-        @datatype = datatype
-        @allowable_values = allowable_values.map do |value|
-          case datatype.to_s
-          when /Integer/i
-            value.to_i
-          when /Float/i
-            value.to_f
-          else
-            value
-          end
-        end
-      end
-
-      def valid?(value)
-        !value || allowable_values.includes?(value)
-      end
-    end
+    @[JSON::Field(key: "entity_statuses", type: Array(String)?, nillable: true, emit_null: false)]
+    property entity_statuses : Array(String)?
 
     # Initializes the object
     # @param [Hash] attributes Model attributes in the form of hash
-    def initialize(@name : String, @entity_type : String, @formation_state : String, @status : String?, @formation_date : Time?, @ein : String?, @address : String?, @phone : String?)
+    def initialize(@entity_types : Array(String)?, @formation_states : Array(String)?, @entity_statuses : Array(String)?)
     end
 
     # Show invalid properties with the reasons. Usually used together with valid?
@@ -80,43 +41,7 @@ module RightDocuments
     # Check to see if the all the properties in the model are valid
     # @return true if the model is valid
     def valid?
-      entity_type_validator = EnumAttributeValidator.new("String", ["C-Corporation", "S-Corporation", "Limited Liability Company", "Partnership"])
-      return false unless entity_type_validator.valid?(@entity_type)
-      formation_state_validator = EnumAttributeValidator.new("String", ["California", "Delaware"])
-      return false unless formation_state_validator.valid?(@formation_state)
-      status_validator = EnumAttributeValidator.new("String", ["Unformed", "Incorporation Filed", "Incorporation Certified", "Operating", "Dissolution Filed", "Dissolution Certified"])
-      return false unless status_validator.valid?(@status)
       true
-    end
-
-    # Custom attribute writer method checking allowed values (enum).
-    # @param [Object] entity_type Object to be assigned
-    def entity_type=(entity_type)
-      validator = EnumAttributeValidator.new("String", ["C-Corporation", "S-Corporation", "Limited Liability Company", "Partnership"])
-      unless validator.valid?(entity_type)
-        raise ArgumentError.new("invalid value for \"entity_type\", must be one of #{validator.allowable_values}.")
-      end
-      @entity_type = entity_type
-    end
-
-    # Custom attribute writer method checking allowed values (enum).
-    # @param [Object] formation_state Object to be assigned
-    def formation_state=(formation_state)
-      validator = EnumAttributeValidator.new("String", ["California", "Delaware"])
-      unless validator.valid?(formation_state)
-        raise ArgumentError.new("invalid value for \"formation_state\", must be one of #{validator.allowable_values}.")
-      end
-      @formation_state = formation_state
-    end
-
-    # Custom attribute writer method checking allowed values (enum).
-    # @param [Object] status Object to be assigned
-    def status=(status)
-      validator = EnumAttributeValidator.new("String", ["Unformed", "Incorporation Filed", "Incorporation Certified", "Operating", "Dissolution Filed", "Dissolution Certified"])
-      unless validator.valid?(status)
-        raise ArgumentError.new("invalid value for \"status\", must be one of #{validator.allowable_values}.")
-      end
-      @status = status
     end
 
     # Checks equality by comparing each attribute.
@@ -124,14 +49,9 @@ module RightDocuments
     def ==(o)
       return true if self.same?(o)
       self.class == o.class &&
-          name == o.name &&
-          entity_type == o.entity_type &&
-          formation_state == o.formation_state &&
-          status == o.status &&
-          formation_date == o.formation_date &&
-          ein == o.ein &&
-          address == o.address &&
-          phone == o.phone
+          entity_types == o.entity_types &&
+          formation_states == o.formation_states &&
+          entity_statuses == o.entity_statuses
     end
 
     # @see the `==` method
@@ -143,7 +63,7 @@ module RightDocuments
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [name, entity_type, formation_state, status, formation_date, ein, address, phone].hash
+      [entity_types, formation_states, entity_statuses].hash
     end
 
     # Builds the object from hash

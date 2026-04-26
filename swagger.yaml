@@ -4,6 +4,33 @@ info:
   title: RightDocuments API
   version: v1
 paths:
+  "/api/v1/catalog":
+    get:
+      summary: Enumerate valid values for entity_type, formation_state, and status
+      description: Public catalog of accepted enum values. No authentication required.
+      tags:
+      - Catalog
+      security: []
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  entity_types:
+                    type: array
+                    items:
+                      type: string
+                  formation_states:
+                    type: array
+                    items:
+                      type: string
+                  entity_statuses:
+                    type: array
+                    items:
+                      type: string
   "/api/v1/entities/{entity_id}/documents/import":
     parameters:
     - name: entity_id
@@ -174,24 +201,24 @@ paths:
                     entity_type:
                       type: string
                       enum:
-                      - c-corp
-                      - s-corp
-                      - llc
-                      - partnership
+                      - C-Corporation
+                      - S-Corporation
+                      - Limited Liability Company
+                      - Partnership
                     formation_state:
                       type: string
                       enum:
-                      - CA
-                      - DE
+                      - California
+                      - Delaware
                     status:
                       type: string
                       enum:
-                      - unformed
-                      - incorporation_filed
-                      - incorporation_certified
-                      - operating
-                      - dissolution_filed
-                      - dissolution_certified
+                      - Unformed
+                      - Incorporation Filed
+                      - Incorporation Certified
+                      - Operating
+                      - Dissolution Filed
+                      - Dissolution Certified
                     formation_date:
                       type: string
                       format: date
