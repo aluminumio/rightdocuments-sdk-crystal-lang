@@ -13,25 +13,22 @@ require "json"
 require "time"
 
 module RightDocuments
-  class ApiV1CatalogGet200Response
+  class ApiV1CatalogGet200ResponseFormationRequirementsValueInner
     include JSON::Serializable
 
     # Optional properties
-    @[JSON::Field(key: "entity_types", type: Array(String)?, nillable: true, emit_null: false)]
-    property entity_types : Array(String)?
+    @[JSON::Field(key: "name", type: String?, nillable: true, emit_null: false)]
+    property name : String?
 
-    @[JSON::Field(key: "formation_states", type: Array(String)?, nillable: true, emit_null: false)]
-    property formation_states : Array(String)?
+    @[JSON::Field(key: "required_tag", type: String?, nillable: true, emit_null: false)]
+    property required_tag : String?
 
-    @[JSON::Field(key: "entity_statuses", type: Array(String)?, nillable: true, emit_null: false)]
-    property entity_statuses : Array(String)?
-
-    @[JSON::Field(key: "formation_requirements", type: Hash(String, Array(ApiV1CatalogGet200ResponseFormationRequirementsValueInner))?, nillable: true, emit_null: false)]
-    property formation_requirements : Hash(String, Array(ApiV1CatalogGet200ResponseFormationRequirementsValueInner))?
+    @[JSON::Field(key: "description", type: String?, nillable: true, emit_null: false)]
+    property description : String?
 
     # Initializes the object
     # @param [Hash] attributes Model attributes in the form of hash
-    def initialize(@entity_types : Array(String)?, @formation_states : Array(String)?, @entity_statuses : Array(String)?, @formation_requirements : Hash(String, Array(ApiV1CatalogGet200ResponseFormationRequirementsValueInner))?)
+    def initialize(@name : String?, @required_tag : String?, @description : String?)
     end
 
     # Show invalid properties with the reasons. Usually used together with valid?
@@ -52,10 +49,9 @@ module RightDocuments
     def ==(o)
       return true if self.same?(o)
       self.class == o.class &&
-          entity_types == o.entity_types &&
-          formation_states == o.formation_states &&
-          entity_statuses == o.entity_statuses &&
-          formation_requirements == o.formation_requirements
+          name == o.name &&
+          required_tag == o.required_tag &&
+          description == o.description
     end
 
     # @see the `==` method
@@ -67,7 +63,7 @@ module RightDocuments
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [entity_types, formation_states, entity_statuses, formation_requirements].hash
+      [name, required_tag, description].hash
     end
 
     # Builds the object from hash
