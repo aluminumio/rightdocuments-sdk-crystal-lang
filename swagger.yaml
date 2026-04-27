@@ -91,6 +91,36 @@ paths:
             application/json:
               schema:
                 "$ref": "#/components/schemas/Error"
+    patch:
+      summary: Update document metadata (tags, name)
+      tags:
+      - Documents
+      security:
+      - bearer: []
+      - oauth2:
+        - documents:write
+      parameters: []
+      responses:
+        '200':
+          description: updated
+        '403':
+          description: missing documents:write scope
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                tag_list:
+                  type: string
+                  description: Comma-separated tags
+                name:
+                  type: string
+                  description: Display name for imported documents
   "/api/v1/entities/{entity_id}/documents/import":
     parameters:
     - name: entity_id

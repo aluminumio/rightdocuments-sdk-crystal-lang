@@ -131,6 +131,65 @@ module RightDocuments
       return nil, status_code, headers
     end
 
+    # Update document metadata (tags, name)
+    # @param id [String] 
+    # @return [nil]
+    def api_v1_documents_id_patch(id : String, api_v1_documents_id_patch_request : ApiV1DocumentsIdPatchRequest?)
+      api_v1_documents_id_patch_with_http_info(id, api_v1_documents_id_patch_request)
+      nil
+    end
+
+    # Update document metadata (tags, name)
+    # @param id [String] 
+    # @return [Array<(nil, Integer, Hash)>] nil, response status code and response headers
+    def api_v1_documents_id_patch_with_http_info(id : String, api_v1_documents_id_patch_request : ApiV1DocumentsIdPatchRequest?)
+      if @api_client.config.debugging
+        Log.debug {"Calling API: DocumentsApi.api_v1_documents_id_patch ..."}
+      end
+      # verify the required parameter "id" is set
+      if @api_client.config.client_side_validation && id.nil?
+        raise ArgumentError.new("Missing the required parameter 'id' when calling DocumentsApi.api_v1_documents_id_patch")
+      end
+      # resource path
+      local_var_path = "/api/v1/documents/{id}".sub("{" + "id" + "}", URI.encode_path(id.to_s))
+
+      # query parameters
+      query_params = Hash(String, String).new
+
+      # header parameters
+      header_params = Hash(String, String).new
+      # HTTP header "Accept" (if needed)
+      header_params["Accept"] = @api_client.select_header_accept(["application/json"])
+      # HTTP header "Content-Type"
+      header_params["Content-Type"] = @api_client.select_header_content_type(["application/json"])
+
+      # form parameters
+      form_params = Hash(Symbol, (String | ::File)).new
+
+      # http body (model)
+      post_body = api_v1_documents_id_patch_request.to_json
+
+      # return_type
+      return_type = nil
+
+      # auth_names
+      auth_names = ["bearer"]
+
+      data, status_code, headers = @api_client.call_api(:PATCH,
+                                                        local_var_path,
+                                                        :"DocumentsApi.api_v1_documents_id_patch",
+                                                        return_type,
+                                                        post_body,
+                                                        auth_names,
+                                                        header_params,
+                                                        query_params,
+                                                        form_params)
+      if @api_client.config.debugging
+        Log.debug {"API called: DocumentsApi#api_v1_documents_id_patch\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"}
+      end
+      return nil, status_code, headers
+    end
+
     # List documents for an entity
     # @param entity_id [String] 
     # @return [nil]
