@@ -471,6 +471,60 @@ paths:
             application/json:
               schema:
                 "$ref": "#/components/schemas/Error"
+  "/api/v1/templates":
+    post:
+      summary: Create a template in the token's organization
+      tags:
+      - Templates
+      security:
+      - bearer: []
+      - oauth2:
+        - documents:write
+      parameters: []
+      responses:
+        '201':
+          description: created
+        '422':
+          description: validation errors
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '403':
+          description: missing documents:write scope
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - template
+              properties:
+                template:
+                  type: object
+                  required:
+                  - name
+                  - content
+                  properties:
+                    name:
+                      type: string
+                    content:
+                      type: string
+                      description: Markdown content with {{field}} placeholders
+                    description:
+                      type: string
+                      nullable: true
+                    public:
+                      type: boolean
+                      default: false
+                    tag_list:
+                      type: string
+                      description: Comma-separated tags
+                      nullable: true
 servers:
 - url: https://app.rightdocuments.com
 - url: http://localhost:3000
