@@ -80,7 +80,7 @@ module RightDocuments
     # Check to see if the all the properties in the model are valid
     # @return true if the model is valid
     def valid?
-      entity_type_validator = EnumAttributeValidator.new("String", ["C-Corporation", "S-Corporation", "Limited Liability Company", "Partnership"])
+      entity_type_validator = EnumAttributeValidator.new("String", ["C-Corporation", "S-Corporation", "Limited Liability Company", "General Partnership", "Limited Partnership", "Limited Liability Partnership"])
       return false unless entity_type_validator.valid?(@entity_type)
       formation_state_validator = EnumAttributeValidator.new("String", ["California", "Delaware"])
       return false unless formation_state_validator.valid?(@formation_state)
@@ -92,7 +92,7 @@ module RightDocuments
     # Custom attribute writer method checking allowed values (enum).
     # @param [Object] entity_type Object to be assigned
     def entity_type=(entity_type)
-      validator = EnumAttributeValidator.new("String", ["C-Corporation", "S-Corporation", "Limited Liability Company", "Partnership"])
+      validator = EnumAttributeValidator.new("String", ["C-Corporation", "S-Corporation", "Limited Liability Company", "General Partnership", "Limited Partnership", "Limited Liability Partnership"])
       unless validator.valid?(entity_type)
         raise ArgumentError.new("invalid value for \"entity_type\", must be one of #{validator.allowable_values}.")
       end

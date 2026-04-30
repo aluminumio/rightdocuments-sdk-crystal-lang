@@ -3,9 +3,6 @@
 README.md
 git_push.sh
 shard.yml
-spec/api/templates_api_spec.cr
-spec/models/api_v1_templates_post_request_spec.cr
-spec/models/api_v1_templates_post_request_template_spec.cr
 spec/spec_helper.cr
 src/rightdocuments-client.cr
 src/rightdocuments-client/api/catalog_api.cr

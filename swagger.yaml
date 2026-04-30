@@ -270,7 +270,9 @@ paths:
                       - C-Corporation
                       - S-Corporation
                       - Limited Liability Company
-                      - Partnership
+                      - General Partnership
+                      - Limited Partnership
+                      - Limited Liability Partnership
                     formation_state:
                       type: string
                       enum:
