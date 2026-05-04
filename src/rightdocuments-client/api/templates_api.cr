@@ -17,6 +17,114 @@ module RightDocuments
     def initialize(api_client = ApiClient.default)
       @api_client = api_client
     end
+    # List templates visible to the token's organization
+    # @return [ApiV1TemplatesGet200Response]
+    def api_v1_templates_get()
+      data, _status_code, _headers = api_v1_templates_get_with_http_info()
+      data
+    end
+
+    # List templates visible to the token&#39;s organization
+    # @return [Array<(ApiV1TemplatesGet200Response, Integer, Hash)>] ApiV1TemplatesGet200Response data, response status code and response headers
+    def api_v1_templates_get_with_http_info()
+      if @api_client.config.debugging
+        Log.debug {"Calling API: TemplatesApi.api_v1_templates_get ..."}
+      end
+      # resource path
+      local_var_path = "/api/v1/templates"
+
+      # query parameters
+      query_params = Hash(String, String).new
+
+      # header parameters
+      header_params = Hash(String, String).new
+      # HTTP header "Accept" (if needed)
+      header_params["Accept"] = @api_client.select_header_accept(["application/json"])
+
+      # form parameters
+      form_params = Hash(Symbol, (String | ::File)).new
+
+      # http body (model)
+      post_body = nil
+
+      # return_type
+      return_type = "ApiV1TemplatesGet200Response"
+
+      # auth_names
+      auth_names = ["bearer"]
+
+      data, status_code, headers = @api_client.call_api(:GET,
+                                                        local_var_path,
+                                                        :"TemplatesApi.api_v1_templates_get",
+                                                        return_type,
+                                                        post_body,
+                                                        auth_names,
+                                                        header_params,
+                                                        query_params,
+                                                        form_params)
+      if @api_client.config.debugging
+        Log.debug {"API called: TemplatesApi#api_v1_templates_get\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"}
+      end
+      return ApiV1TemplatesGet200Response.from_json(data), status_code, headers
+    end
+
+    # Show a template with its field definitions
+    # @param id [String] 
+    # @return [ApiV1TemplatesIdGet200Response]
+    def api_v1_templates_id_get(id : String)
+      data, _status_code, _headers = api_v1_templates_id_get_with_http_info(id)
+      data
+    end
+
+    # Show a template with its field definitions
+    # @param id [String] 
+    # @return [Array<(ApiV1TemplatesIdGet200Response, Integer, Hash)>] ApiV1TemplatesIdGet200Response data, response status code and response headers
+    def api_v1_templates_id_get_with_http_info(id : String)
+      if @api_client.config.debugging
+        Log.debug {"Calling API: TemplatesApi.api_v1_templates_id_get ..."}
+      end
+      # verify the required parameter "id" is set
+      if @api_client.config.client_side_validation && id.nil?
+        raise ArgumentError.new("Missing the required parameter 'id' when calling TemplatesApi.api_v1_templates_id_get")
+      end
+      # resource path
+      local_var_path = "/api/v1/templates/{id}".sub("{" + "id" + "}", URI.encode_path(id.to_s))
+
+      # query parameters
+      query_params = Hash(String, String).new
+
+      # header parameters
+      header_params = Hash(String, String).new
+      # HTTP header "Accept" (if needed)
+      header_params["Accept"] = @api_client.select_header_accept(["application/json"])
+
+      # form parameters
+      form_params = Hash(Symbol, (String | ::File)).new
+
+      # http body (model)
+      post_body = nil
+
+      # return_type
+      return_type = "ApiV1TemplatesIdGet200Response"
+
+      # auth_names
+      auth_names = ["bearer"]
+
+      data, status_code, headers = @api_client.call_api(:GET,
+                                                        local_var_path,
+                                                        :"TemplatesApi.api_v1_templates_id_get",
+                                                        return_type,
+                                                        post_body,
+                                                        auth_names,
+                                                        header_params,
+                                                        query_params,
+                                                        form_params)
+      if @api_client.config.debugging
+        Log.debug {"API called: TemplatesApi#api_v1_templates_id_get\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"}
+      end
+      return ApiV1TemplatesIdGet200Response.from_json(data), status_code, headers
+    end
+
     # Create a template in the token's organization
     # @return [nil]
     def api_v1_templates_post(api_v1_templates_post_request : ApiV1TemplatesPostRequest?)

@@ -527,6 +527,112 @@ paths:
                       type: string
                       description: Comma-separated tags
                       nullable: true
+    get:
+      summary: List templates visible to the token's organization
+      tags:
+      - Templates
+      security:
+      - bearer: []
+      - oauth2:
+        - documents:read
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  templates:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                      - id
+                      - name
+                      properties:
+                        id:
+                          type: string
+                        name:
+                          type: string
+                        description:
+                          type: string
+                          nullable: true
+                        tags:
+                          type: array
+                          items:
+                            type: string
+  "/api/v1/templates/{id}":
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    get:
+      summary: Show a template with its field definitions
+      tags:
+      - Templates
+      security:
+      - bearer: []
+      - oauth2:
+        - documents:read
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  template:
+                    type: object
+                    required:
+                    - id
+                    - name
+                    - fields
+                    properties:
+                      id:
+                        type: string
+                      name:
+                        type: string
+                      description:
+                        type: string
+                        nullable: true
+                      tags:
+                        type: array
+                        items:
+                          type: string
+                      fields:
+                        type: array
+                        items:
+                          type: object
+                          required:
+                          - name
+                          - label
+                          - type
+                          - required
+                          - entity_field
+                          properties:
+                            name:
+                              type: string
+                            label:
+                              type: string
+                            type:
+                              type: string
+                            required:
+                              type: boolean
+                            default:
+                              type: string
+                              nullable: true
+                            entity_field:
+                              type: boolean
+        '404':
+          description: wrong organization
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
 servers:
 - url: https://app.rightdocuments.com
 - url: http://localhost:3000
@@ -540,7 +646,7 @@ components:
         urn:ietf:params:oauth:grant-type:device_code:
           tokenUrl: "/oauth/token"
           scopes:
-            documents:read: Read documents
+            documents:read: Read documents and templates
             documents:write: Create/import documents
     bearer:
       type: http
