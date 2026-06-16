@@ -278,6 +278,7 @@ paths:
                       enum:
                       - California
                       - Delaware
+                      - Florida
                     status:
                       type: string
                       enum:

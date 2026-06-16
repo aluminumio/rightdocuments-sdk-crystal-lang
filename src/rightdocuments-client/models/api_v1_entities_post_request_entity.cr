@@ -82,7 +82,7 @@ module RightDocuments
     def valid?
       entity_type_validator = EnumAttributeValidator.new("String", ["C-Corporation", "S-Corporation", "Limited Liability Company", "General Partnership", "Limited Partnership", "Limited Liability Partnership"])
       return false unless entity_type_validator.valid?(@entity_type)
-      formation_state_validator = EnumAttributeValidator.new("String", ["California", "Delaware"])
+      formation_state_validator = EnumAttributeValidator.new("String", ["California", "Delaware", "Florida"])
       return false unless formation_state_validator.valid?(@formation_state)
       status_validator = EnumAttributeValidator.new("String", ["Unformed", "Incorporation Filed", "Incorporation Certified", "Operating", "Dissolution Filed", "Dissolution Certified"])
       return false unless status_validator.valid?(@status)
@@ -102,7 +102,7 @@ module RightDocuments
     # Custom attribute writer method checking allowed values (enum).
     # @param [Object] formation_state Object to be assigned
     def formation_state=(formation_state)
-      validator = EnumAttributeValidator.new("String", ["California", "Delaware"])
+      validator = EnumAttributeValidator.new("String", ["California", "Delaware", "Florida"])
       unless validator.valid?(formation_state)
         raise ArgumentError.new("invalid value for \"formation_state\", must be one of #{validator.allowable_values}.")
       end
