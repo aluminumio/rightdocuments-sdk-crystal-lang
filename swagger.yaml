@@ -44,6 +44,43 @@ paths:
                             type: string
                           description:
                             type: string
+  "/api/v1/clients":
+    get:
+      summary: List the organization's clients
+      tags:
+      - Clients
+      security:
+      - bearer: []
+      - oauth2:
+        - documents:read
+      responses:
+        '200':
+          description: clients
+  "/api/v1/clients/{id}":
+    parameters:
+    - name: id
+      in: path
+      description: Client UUID or number (e.g. 4 or 0004)
+      required: true
+      schema:
+        type: string
+    get:
+      summary: Show a client
+      tags:
+      - Clients
+      security:
+      - bearer: []
+      - oauth2:
+        - documents:read
+      responses:
+        '200':
+          description: by number
+        '404':
+          description: not in this organization
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
   "/api/v1/documents/{id}":
     parameters:
     - name: id
@@ -432,6 +469,300 @@ paths:
             application/json:
               schema:
                 "$ref": "#/components/schemas/Error"
+  "/api/v1/matters":
+    get:
+      summary: List matters
+      tags:
+      - Matters
+      security:
+      - bearer: []
+      - oauth2:
+        - documents:read
+      parameters:
+      - name: status
+        in: query
+        required: false
+        description: open or closed
+        schema:
+          type: string
+      - name: client
+        in: query
+        required: false
+        description: Client UUID or number
+        schema:
+          type: string
+      responses:
+        '200':
+          description: matters
+    post:
+      summary: Open a matter for a client
+      tags:
+      - Matters
+      security:
+      - bearer: []
+      - oauth2:
+        - documents:write
+      parameters: []
+      responses:
+        '201':
+          description: opened
+        '403':
+          description: missing documents:write scope
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '404':
+          description: client not in this organization
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - matter
+              properties:
+                matter:
+                  type: object
+                  required:
+                  - client
+                  - name
+                  properties:
+                    client:
+                      type: string
+                      description: Client UUID or number
+                    name:
+                      type: string
+  "/api/v1/matters/{id}":
+    parameters:
+    - name: id
+      in: path
+      description: Matter UUID or number (e.g. 0004-001 or 4-1)
+      required: true
+      schema:
+        type: string
+    get:
+      summary: Show a matter with its parties
+      tags:
+      - Matters
+      security:
+      - bearer: []
+      - oauth2:
+        - documents:read
+      responses:
+        '200':
+          description: by number
+        '404':
+          description: unknown number
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+    patch:
+      summary: Update a matter's settings
+      tags:
+      - Matters
+      security:
+      - bearer: []
+      - oauth2:
+        - documents:write
+      parameters: []
+      responses:
+        '200':
+          description: updated
+        '422':
+          description: invalid type
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                matter:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    matter_type:
+                      type: string
+                      enum:
+                      - advisory
+                      - pre_litigation
+                      - litigation
+                    our_role:
+                      type: string
+                      enum:
+                      - plaintiff
+                      - defendant
+                      - claimant
+                      - respondent
+                      - advisor
+                    status:
+                      type: string
+                      enum:
+                      - open
+                      - closed
+                    opened_on:
+                      type: string
+                      format: date
+                    closed_on:
+                      type: string
+                      format: date
+                    description:
+                      type: string
+                    outcome:
+                      type: string
+  "/api/v1/matters/{matter_id}/parties":
+    parameters:
+    - name: matter_id
+      in: path
+      description: Matter UUID or number
+      required: true
+      schema:
+        type: string
+    get:
+      summary: List a matter's parties
+      tags:
+      - Matters
+      security:
+      - bearer: []
+      - oauth2:
+        - documents:read
+      responses:
+        '200':
+          description: parties
+    post:
+      summary: Add a party to a matter
+      tags:
+      - Matters
+      security:
+      - bearer: []
+      - oauth2:
+        - documents:write
+      parameters: []
+      responses:
+        '201':
+          description: added
+        '422':
+          description: missing name
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - party
+              properties:
+                party:
+                  type: object
+                  required:
+                  - name
+                  - role
+                  properties:
+                    name:
+                      type: string
+                    role:
+                      type: string
+                      enum:
+                      - adverse_party
+                      - opposing_counsel
+                      - co_counsel
+                      - court
+                      - witness
+                      - other
+                    email:
+                      type: string
+                    address:
+                      type: string
+                    notes:
+                      type: string
+                    entity_id:
+                      type: string
+                      description: One of our companies, if the party is one
+  "/api/v1/matters/{matter_id}/parties/{id}":
+    parameters:
+    - name: matter_id
+      in: path
+      required: true
+      schema:
+        type: string
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    delete:
+      summary: Remove a party
+      tags:
+      - Matters
+      security:
+      - bearer: []
+      - oauth2:
+        - documents:write
+      responses:
+        '204':
+          description: removed
+  "/api/v1/matters/{matter_id}/documents":
+    parameters:
+    - name: matter_id
+      in: path
+      required: true
+      schema:
+        type: string
+    get:
+      summary: List a matter's documents
+      tags:
+      - Matters
+      security:
+      - bearer: []
+      - oauth2:
+        - documents:read
+      responses:
+        '200':
+          description: documents
+  "/api/v1/matters/{matter_id}/documents/import":
+    parameters:
+    - name: matter_id
+      in: path
+      required: true
+      schema:
+        type: string
+    post:
+      summary: Import a signed PDF under a matter
+      tags:
+      - Matters
+      security:
+      - bearer: []
+      - oauth2:
+        - documents:write
+      parameters: []
+      responses:
+        '201':
+          description: imported
+        '422':
+          description: no file
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: file
+        required: true
   "/api/v1/me":
     get:
       summary: Returns the user and the token-bound organization
