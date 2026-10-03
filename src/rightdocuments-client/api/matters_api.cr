@@ -184,6 +184,303 @@ module RightDocuments
       return nil, status_code, headers
     end
 
+    # List a matter's deadlines (by due date)
+    # @param matter_id [String] Matter UUID or number
+    # @return [nil]
+    def api_v1_matters_matter_id_deadlines_get(matter_id : String)
+      api_v1_matters_matter_id_deadlines_get_with_http_info(matter_id)
+      nil
+    end
+
+    # List a matter&#39;s deadlines (by due date)
+    # @param matter_id [String] Matter UUID or number
+    # @return [Array<(nil, Integer, Hash)>] nil, response status code and response headers
+    def api_v1_matters_matter_id_deadlines_get_with_http_info(matter_id : String)
+      if @api_client.config.debugging
+        Log.debug {"Calling API: MattersApi.api_v1_matters_matter_id_deadlines_get ..."}
+      end
+      # verify the required parameter "matter_id" is set
+      if @api_client.config.client_side_validation && matter_id.nil?
+        raise ArgumentError.new("Missing the required parameter 'matter_id' when calling MattersApi.api_v1_matters_matter_id_deadlines_get")
+      end
+      # resource path
+      local_var_path = "/api/v1/matters/{matter_id}/deadlines".sub("{" + "matter_id" + "}", URI.encode_path(matter_id.to_s))
+
+      # query parameters
+      query_params = Hash(String, String).new
+
+      # header parameters
+      header_params = Hash(String, String).new
+
+      # form parameters
+      form_params = Hash(Symbol, (String | ::File)).new
+
+      # http body (model)
+      post_body = nil
+
+      # return_type
+      return_type = nil
+
+      # auth_names
+      auth_names = ["bearer"]
+
+      data, status_code, headers = @api_client.call_api(:GET,
+                                                        local_var_path,
+                                                        :"MattersApi.api_v1_matters_matter_id_deadlines_get",
+                                                        return_type,
+                                                        post_body,
+                                                        auth_names,
+                                                        header_params,
+                                                        query_params,
+                                                        form_params)
+      if @api_client.config.debugging
+        Log.debug {"API called: MattersApi#api_v1_matters_matter_id_deadlines_get\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"}
+      end
+      return nil, status_code, headers
+    end
+
+    # Mark a deadline done
+    # @param matter_id [String] 
+    # @param id [String] 
+    # @return [nil]
+    def api_v1_matters_matter_id_deadlines_id_complete_post(matter_id : String, id : String)
+      api_v1_matters_matter_id_deadlines_id_complete_post_with_http_info(matter_id, id)
+      nil
+    end
+
+    # Mark a deadline done
+    # @param matter_id [String] 
+    # @param id [String] 
+    # @return [Array<(nil, Integer, Hash)>] nil, response status code and response headers
+    def api_v1_matters_matter_id_deadlines_id_complete_post_with_http_info(matter_id : String, id : String)
+      if @api_client.config.debugging
+        Log.debug {"Calling API: MattersApi.api_v1_matters_matter_id_deadlines_id_complete_post ..."}
+      end
+      # verify the required parameter "matter_id" is set
+      if @api_client.config.client_side_validation && matter_id.nil?
+        raise ArgumentError.new("Missing the required parameter 'matter_id' when calling MattersApi.api_v1_matters_matter_id_deadlines_id_complete_post")
+      end
+      # verify the required parameter "id" is set
+      if @api_client.config.client_side_validation && id.nil?
+        raise ArgumentError.new("Missing the required parameter 'id' when calling MattersApi.api_v1_matters_matter_id_deadlines_id_complete_post")
+      end
+      # resource path
+      local_var_path = "/api/v1/matters/{matter_id}/deadlines/{id}/complete".sub("{" + "matter_id" + "}", URI.encode_path(matter_id.to_s)).sub("{" + "id" + "}", URI.encode_path(id.to_s))
+
+      # query parameters
+      query_params = Hash(String, String).new
+
+      # header parameters
+      header_params = Hash(String, String).new
+
+      # form parameters
+      form_params = Hash(Symbol, (String | ::File)).new
+
+      # http body (model)
+      post_body = nil
+
+      # return_type
+      return_type = nil
+
+      # auth_names
+      auth_names = ["bearer"]
+
+      data, status_code, headers = @api_client.call_api(:POST,
+                                                        local_var_path,
+                                                        :"MattersApi.api_v1_matters_matter_id_deadlines_id_complete_post",
+                                                        return_type,
+                                                        post_body,
+                                                        auth_names,
+                                                        header_params,
+                                                        query_params,
+                                                        form_params)
+      if @api_client.config.debugging
+        Log.debug {"API called: MattersApi#api_v1_matters_matter_id_deadlines_id_complete_post\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"}
+      end
+      return nil, status_code, headers
+    end
+
+    # Remove a deadline
+    # @param matter_id [String] 
+    # @param id [String] 
+    # @return [nil]
+    def api_v1_matters_matter_id_deadlines_id_delete(matter_id : String, id : String)
+      api_v1_matters_matter_id_deadlines_id_delete_with_http_info(matter_id, id)
+      nil
+    end
+
+    # Remove a deadline
+    # @param matter_id [String] 
+    # @param id [String] 
+    # @return [Array<(nil, Integer, Hash)>] nil, response status code and response headers
+    def api_v1_matters_matter_id_deadlines_id_delete_with_http_info(matter_id : String, id : String)
+      if @api_client.config.debugging
+        Log.debug {"Calling API: MattersApi.api_v1_matters_matter_id_deadlines_id_delete ..."}
+      end
+      # verify the required parameter "matter_id" is set
+      if @api_client.config.client_side_validation && matter_id.nil?
+        raise ArgumentError.new("Missing the required parameter 'matter_id' when calling MattersApi.api_v1_matters_matter_id_deadlines_id_delete")
+      end
+      # verify the required parameter "id" is set
+      if @api_client.config.client_side_validation && id.nil?
+        raise ArgumentError.new("Missing the required parameter 'id' when calling MattersApi.api_v1_matters_matter_id_deadlines_id_delete")
+      end
+      # resource path
+      local_var_path = "/api/v1/matters/{matter_id}/deadlines/{id}".sub("{" + "matter_id" + "}", URI.encode_path(matter_id.to_s)).sub("{" + "id" + "}", URI.encode_path(id.to_s))
+
+      # query parameters
+      query_params = Hash(String, String).new
+
+      # header parameters
+      header_params = Hash(String, String).new
+
+      # form parameters
+      form_params = Hash(Symbol, (String | ::File)).new
+
+      # http body (model)
+      post_body = nil
+
+      # return_type
+      return_type = nil
+
+      # auth_names
+      auth_names = ["bearer"]
+
+      data, status_code, headers = @api_client.call_api(:DELETE,
+                                                        local_var_path,
+                                                        :"MattersApi.api_v1_matters_matter_id_deadlines_id_delete",
+                                                        return_type,
+                                                        post_body,
+                                                        auth_names,
+                                                        header_params,
+                                                        query_params,
+                                                        form_params)
+      if @api_client.config.debugging
+        Log.debug {"API called: MattersApi#api_v1_matters_matter_id_deadlines_id_delete\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"}
+      end
+      return nil, status_code, headers
+    end
+
+    # Reopen a deadline
+    # @param matter_id [String] 
+    # @param id [String] 
+    # @return [nil]
+    def api_v1_matters_matter_id_deadlines_id_reopen_post(matter_id : String, id : String)
+      api_v1_matters_matter_id_deadlines_id_reopen_post_with_http_info(matter_id, id)
+      nil
+    end
+
+    # Reopen a deadline
+    # @param matter_id [String] 
+    # @param id [String] 
+    # @return [Array<(nil, Integer, Hash)>] nil, response status code and response headers
+    def api_v1_matters_matter_id_deadlines_id_reopen_post_with_http_info(matter_id : String, id : String)
+      if @api_client.config.debugging
+        Log.debug {"Calling API: MattersApi.api_v1_matters_matter_id_deadlines_id_reopen_post ..."}
+      end
+      # verify the required parameter "matter_id" is set
+      if @api_client.config.client_side_validation && matter_id.nil?
+        raise ArgumentError.new("Missing the required parameter 'matter_id' when calling MattersApi.api_v1_matters_matter_id_deadlines_id_reopen_post")
+      end
+      # verify the required parameter "id" is set
+      if @api_client.config.client_side_validation && id.nil?
+        raise ArgumentError.new("Missing the required parameter 'id' when calling MattersApi.api_v1_matters_matter_id_deadlines_id_reopen_post")
+      end
+      # resource path
+      local_var_path = "/api/v1/matters/{matter_id}/deadlines/{id}/reopen".sub("{" + "matter_id" + "}", URI.encode_path(matter_id.to_s)).sub("{" + "id" + "}", URI.encode_path(id.to_s))
+
+      # query parameters
+      query_params = Hash(String, String).new
+
+      # header parameters
+      header_params = Hash(String, String).new
+
+      # form parameters
+      form_params = Hash(Symbol, (String | ::File)).new
+
+      # http body (model)
+      post_body = nil
+
+      # return_type
+      return_type = nil
+
+      # auth_names
+      auth_names = ["bearer"]
+
+      data, status_code, headers = @api_client.call_api(:POST,
+                                                        local_var_path,
+                                                        :"MattersApi.api_v1_matters_matter_id_deadlines_id_reopen_post",
+                                                        return_type,
+                                                        post_body,
+                                                        auth_names,
+                                                        header_params,
+                                                        query_params,
+                                                        form_params)
+      if @api_client.config.debugging
+        Log.debug {"API called: MattersApi#api_v1_matters_matter_id_deadlines_id_reopen_post\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"}
+      end
+      return nil, status_code, headers
+    end
+
+    # Add a deadline
+    # @param matter_id [String] Matter UUID or number
+    # @return [nil]
+    def api_v1_matters_matter_id_deadlines_post(matter_id : String, api_v1_matters_matter_id_deadlines_post_request : ApiV1MattersMatterIdDeadlinesPostRequest?)
+      api_v1_matters_matter_id_deadlines_post_with_http_info(matter_id, api_v1_matters_matter_id_deadlines_post_request)
+      nil
+    end
+
+    # Add a deadline
+    # @param matter_id [String] Matter UUID or number
+    # @return [Array<(nil, Integer, Hash)>] nil, response status code and response headers
+    def api_v1_matters_matter_id_deadlines_post_with_http_info(matter_id : String, api_v1_matters_matter_id_deadlines_post_request : ApiV1MattersMatterIdDeadlinesPostRequest?)
+      if @api_client.config.debugging
+        Log.debug {"Calling API: MattersApi.api_v1_matters_matter_id_deadlines_post ..."}
+      end
+      # verify the required parameter "matter_id" is set
+      if @api_client.config.client_side_validation && matter_id.nil?
+        raise ArgumentError.new("Missing the required parameter 'matter_id' when calling MattersApi.api_v1_matters_matter_id_deadlines_post")
+      end
+      # resource path
+      local_var_path = "/api/v1/matters/{matter_id}/deadlines".sub("{" + "matter_id" + "}", URI.encode_path(matter_id.to_s))
+
+      # query parameters
+      query_params = Hash(String, String).new
+
+      # header parameters
+      header_params = Hash(String, String).new
+      # HTTP header "Accept" (if needed)
+      header_params["Accept"] = @api_client.select_header_accept(["application/json"])
+      # HTTP header "Content-Type"
+      header_params["Content-Type"] = @api_client.select_header_content_type(["application/json"])
+
+      # form parameters
+      form_params = Hash(Symbol, (String | ::File)).new
+
+      # http body (model)
+      post_body = api_v1_matters_matter_id_deadlines_post_request.to_json
+
+      # return_type
+      return_type = nil
+
+      # auth_names
+      auth_names = ["bearer"]
+
+      data, status_code, headers = @api_client.call_api(:POST,
+                                                        local_var_path,
+                                                        :"MattersApi.api_v1_matters_matter_id_deadlines_post",
+                                                        return_type,
+                                                        post_body,
+                                                        auth_names,
+                                                        header_params,
+                                                        query_params,
+                                                        form_params)
+      if @api_client.config.debugging
+        Log.debug {"API called: MattersApi#api_v1_matters_matter_id_deadlines_post\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"}
+      end
+      return nil, status_code, headers
+    end
+
     # List a matter's documents
     # @param matter_id [String] 
     # @return [nil]

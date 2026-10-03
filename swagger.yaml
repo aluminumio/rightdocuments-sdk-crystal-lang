@@ -517,6 +517,133 @@ paths:
             application/json:
               schema:
                 "$ref": "#/components/schemas/Error"
+  "/api/v1/matters/{matter_id}/deadlines":
+    parameters:
+    - name: matter_id
+      in: path
+      description: Matter UUID or number
+      required: true
+      schema:
+        type: string
+    get:
+      summary: List a matter's deadlines (by due date)
+      tags:
+      - Matters
+      security:
+      - bearer: []
+      - oauth2:
+        - documents:read
+      responses:
+        '200':
+          description: deadlines
+    post:
+      summary: Add a deadline
+      tags:
+      - Matters
+      security:
+      - bearer: []
+      - oauth2:
+        - documents:write
+      parameters: []
+      responses:
+        '201':
+          description: added
+        '422':
+          description: missing date
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - deadline
+              properties:
+                deadline:
+                  type: object
+                  required:
+                  - name
+                  - due_on
+                  properties:
+                    name:
+                      type: string
+                    due_on:
+                      type: string
+                      format: date
+                    notes:
+                      type: string
+  "/api/v1/matters/{matter_id}/deadlines/{id}/complete":
+    parameters:
+    - name: matter_id
+      in: path
+      required: true
+      schema:
+        type: string
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    post:
+      summary: Mark a deadline done
+      tags:
+      - Matters
+      security:
+      - bearer: []
+      - oauth2:
+        - documents:write
+      responses:
+        '200':
+          description: done
+  "/api/v1/matters/{matter_id}/deadlines/{id}/reopen":
+    parameters:
+    - name: matter_id
+      in: path
+      required: true
+      schema:
+        type: string
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    post:
+      summary: Reopen a deadline
+      tags:
+      - Matters
+      security:
+      - bearer: []
+      - oauth2:
+        - documents:write
+      responses:
+        '200':
+          description: reopened
+  "/api/v1/matters/{matter_id}/deadlines/{id}":
+    parameters:
+    - name: matter_id
+      in: path
+      required: true
+      schema:
+        type: string
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    delete:
+      summary: Remove a deadline
+      tags:
+      - Matters
+      security:
+      - bearer: []
+      - oauth2:
+        - documents:write
+      responses:
+        '204':
+          description: removed
   "/api/v1/matters":
     get:
       summary: List matters
