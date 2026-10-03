@@ -231,6 +231,35 @@ paths:
                       type: string
                     notes:
                       type: string
+  "/api/v1/documents/{document_id}/deliveries/{id}/sync":
+    parameters:
+    - name: document_id
+      in: path
+      required: true
+      schema:
+        type: string
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    post:
+      summary: Refresh the postal tracking of a mailed letter
+      tags:
+      - Documents
+      security:
+      - bearer: []
+      - oauth2:
+        - documents:write
+      responses:
+        '200':
+          description: refreshed
+        '422':
+          description: not a letter mailed by the app
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
   "/api/v1/documents/{id}":
     parameters:
     - name: id
