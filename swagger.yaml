@@ -260,6 +260,50 @@ paths:
             application/json:
               schema:
                 "$ref": "#/components/schemas/Error"
+  "/api/v1/documents/{document_id}/deliveries/mail":
+    parameters:
+    - name: document_id
+      in: path
+      required: true
+      schema:
+        type: string
+    post:
+      summary: Mail the document to a matter party as a letter (costs postage)
+      tags:
+      - Documents
+      security:
+      - bearer: []
+      - oauth2:
+        - documents:write
+      parameters: []
+      responses:
+        '201':
+          description: letter created
+        '422':
+          description: not confirmed
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - party_id
+              - confirm
+              properties:
+                party_id:
+                  type: string
+                extra_service:
+                  type: string
+                  enum:
+                  - certified
+                  - certified_return_receipt
+                confirm:
+                  type: boolean
+                  description: 'Must be true: this sends a real, paid letter'
   "/api/v1/documents/{id}":
     parameters:
     - name: id
