@@ -17,6 +17,183 @@ module RightDocuments
     def initialize(api_client = ApiClient.default)
       @api_client = api_client
     end
+    # List how a document was sent
+    # @param document_id [String] 
+    # @return [nil]
+    def api_v1_documents_document_id_deliveries_get(document_id : String)
+      api_v1_documents_document_id_deliveries_get_with_http_info(document_id)
+      nil
+    end
+
+    # List how a document was sent
+    # @param document_id [String] 
+    # @return [Array<(nil, Integer, Hash)>] nil, response status code and response headers
+    def api_v1_documents_document_id_deliveries_get_with_http_info(document_id : String)
+      if @api_client.config.debugging
+        Log.debug {"Calling API: DocumentsApi.api_v1_documents_document_id_deliveries_get ..."}
+      end
+      # verify the required parameter "document_id" is set
+      if @api_client.config.client_side_validation && document_id.nil?
+        raise ArgumentError.new("Missing the required parameter 'document_id' when calling DocumentsApi.api_v1_documents_document_id_deliveries_get")
+      end
+      # resource path
+      local_var_path = "/api/v1/documents/{document_id}/deliveries".sub("{" + "document_id" + "}", URI.encode_path(document_id.to_s))
+
+      # query parameters
+      query_params = Hash(String, String).new
+
+      # header parameters
+      header_params = Hash(String, String).new
+
+      # form parameters
+      form_params = Hash(Symbol, (String | ::File)).new
+
+      # http body (model)
+      post_body = nil
+
+      # return_type
+      return_type = nil
+
+      # auth_names
+      auth_names = ["bearer"]
+
+      data, status_code, headers = @api_client.call_api(:GET,
+                                                        local_var_path,
+                                                        :"DocumentsApi.api_v1_documents_document_id_deliveries_get",
+                                                        return_type,
+                                                        post_body,
+                                                        auth_names,
+                                                        header_params,
+                                                        query_params,
+                                                        form_params)
+      if @api_client.config.debugging
+        Log.debug {"API called: DocumentsApi#api_v1_documents_document_id_deliveries_get\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"}
+      end
+      return nil, status_code, headers
+    end
+
+    # Update a delivery (e.g. mark delivered)
+    # @param document_id [String] 
+    # @param id [String] 
+    # @return [nil]
+    def api_v1_documents_document_id_deliveries_id_patch(document_id : String, id : String, api_v1_documents_document_id_deliveries_id_patch_request : ApiV1DocumentsDocumentIdDeliveriesIdPatchRequest?)
+      api_v1_documents_document_id_deliveries_id_patch_with_http_info(document_id, id, api_v1_documents_document_id_deliveries_id_patch_request)
+      nil
+    end
+
+    # Update a delivery (e.g. mark delivered)
+    # @param document_id [String] 
+    # @param id [String] 
+    # @return [Array<(nil, Integer, Hash)>] nil, response status code and response headers
+    def api_v1_documents_document_id_deliveries_id_patch_with_http_info(document_id : String, id : String, api_v1_documents_document_id_deliveries_id_patch_request : ApiV1DocumentsDocumentIdDeliveriesIdPatchRequest?)
+      if @api_client.config.debugging
+        Log.debug {"Calling API: DocumentsApi.api_v1_documents_document_id_deliveries_id_patch ..."}
+      end
+      # verify the required parameter "document_id" is set
+      if @api_client.config.client_side_validation && document_id.nil?
+        raise ArgumentError.new("Missing the required parameter 'document_id' when calling DocumentsApi.api_v1_documents_document_id_deliveries_id_patch")
+      end
+      # verify the required parameter "id" is set
+      if @api_client.config.client_side_validation && id.nil?
+        raise ArgumentError.new("Missing the required parameter 'id' when calling DocumentsApi.api_v1_documents_document_id_deliveries_id_patch")
+      end
+      # resource path
+      local_var_path = "/api/v1/documents/{document_id}/deliveries/{id}".sub("{" + "document_id" + "}", URI.encode_path(document_id.to_s)).sub("{" + "id" + "}", URI.encode_path(id.to_s))
+
+      # query parameters
+      query_params = Hash(String, String).new
+
+      # header parameters
+      header_params = Hash(String, String).new
+      # HTTP header "Content-Type"
+      header_params["Content-Type"] = @api_client.select_header_content_type(["application/json"])
+
+      # form parameters
+      form_params = Hash(Symbol, (String | ::File)).new
+
+      # http body (model)
+      post_body = api_v1_documents_document_id_deliveries_id_patch_request.to_json
+
+      # return_type
+      return_type = nil
+
+      # auth_names
+      auth_names = ["bearer"]
+
+      data, status_code, headers = @api_client.call_api(:PATCH,
+                                                        local_var_path,
+                                                        :"DocumentsApi.api_v1_documents_document_id_deliveries_id_patch",
+                                                        return_type,
+                                                        post_body,
+                                                        auth_names,
+                                                        header_params,
+                                                        query_params,
+                                                        form_params)
+      if @api_client.config.debugging
+        Log.debug {"API called: DocumentsApi#api_v1_documents_document_id_deliveries_id_patch\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"}
+      end
+      return nil, status_code, headers
+    end
+
+    # Log a delivery
+    # @param document_id [String] 
+    # @return [nil]
+    def api_v1_documents_document_id_deliveries_post(document_id : String, api_v1_documents_document_id_deliveries_post_request : ApiV1DocumentsDocumentIdDeliveriesPostRequest?)
+      api_v1_documents_document_id_deliveries_post_with_http_info(document_id, api_v1_documents_document_id_deliveries_post_request)
+      nil
+    end
+
+    # Log a delivery
+    # @param document_id [String] 
+    # @return [Array<(nil, Integer, Hash)>] nil, response status code and response headers
+    def api_v1_documents_document_id_deliveries_post_with_http_info(document_id : String, api_v1_documents_document_id_deliveries_post_request : ApiV1DocumentsDocumentIdDeliveriesPostRequest?)
+      if @api_client.config.debugging
+        Log.debug {"Calling API: DocumentsApi.api_v1_documents_document_id_deliveries_post ..."}
+      end
+      # verify the required parameter "document_id" is set
+      if @api_client.config.client_side_validation && document_id.nil?
+        raise ArgumentError.new("Missing the required parameter 'document_id' when calling DocumentsApi.api_v1_documents_document_id_deliveries_post")
+      end
+      # resource path
+      local_var_path = "/api/v1/documents/{document_id}/deliveries".sub("{" + "document_id" + "}", URI.encode_path(document_id.to_s))
+
+      # query parameters
+      query_params = Hash(String, String).new
+
+      # header parameters
+      header_params = Hash(String, String).new
+      # HTTP header "Accept" (if needed)
+      header_params["Accept"] = @api_client.select_header_accept(["application/json"])
+      # HTTP header "Content-Type"
+      header_params["Content-Type"] = @api_client.select_header_content_type(["application/json"])
+
+      # form parameters
+      form_params = Hash(Symbol, (String | ::File)).new
+
+      # http body (model)
+      post_body = api_v1_documents_document_id_deliveries_post_request.to_json
+
+      # return_type
+      return_type = nil
+
+      # auth_names
+      auth_names = ["bearer"]
+
+      data, status_code, headers = @api_client.call_api(:POST,
+                                                        local_var_path,
+                                                        :"DocumentsApi.api_v1_documents_document_id_deliveries_post",
+                                                        return_type,
+                                                        post_body,
+                                                        auth_names,
+                                                        header_params,
+                                                        query_params,
+                                                        form_params)
+      if @api_client.config.debugging
+        Log.debug {"API called: DocumentsApi#api_v1_documents_document_id_deliveries_post\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"}
+      end
+      return nil, status_code, headers
+    end
+
     # Delete a voided document permanently (admins only)
     # @param id [String] 
     # @return [nil]

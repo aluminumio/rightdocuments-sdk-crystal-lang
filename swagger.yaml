@@ -81,6 +81,156 @@ paths:
             application/json:
               schema:
                 "$ref": "#/components/schemas/Error"
+  "/api/v1/documents/{document_id}/deliveries":
+    parameters:
+    - name: document_id
+      in: path
+      required: true
+      schema:
+        type: string
+    get:
+      summary: List how a document was sent
+      tags:
+      - Documents
+      security:
+      - bearer: []
+      - oauth2:
+        - documents:read
+      responses:
+        '200':
+          description: deliveries
+    post:
+      summary: Log a delivery
+      tags:
+      - Documents
+      security:
+      - bearer: []
+      - oauth2:
+        - documents:write
+      parameters: []
+      responses:
+        '201':
+          description: logged, recipient from a matter party
+        '422':
+          description: mail without an address
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '409':
+          description: voided document
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - delivery
+              properties:
+                delivery:
+                  type: object
+                  required:
+                  - channel
+                  properties:
+                    channel:
+                      type: string
+                      enum:
+                      - email
+                      - mail
+                      - courier
+                      - hand
+                      - other
+                    provider:
+                      type: string
+                      enum:
+                      - manual
+                      - smtp
+                      - dhl
+                      - fedex
+                      - other
+                    provider_id:
+                      type: string
+                    tracking_url:
+                      type: string
+                    status:
+                      type: string
+                      enum:
+                      - queued
+                      - sent
+                      - delivered
+                      - failed
+                      - unknown
+                    sent_at:
+                      type: string
+                      format: date-time
+                    delivered_at:
+                      type: string
+                      format: date-time
+                    recipient_name:
+                      type: string
+                    recipient_email:
+                      type: string
+                    recipient_address:
+                      type: string
+                    notes:
+                      type: string
+                    party_id:
+                      type: string
+                      description: A party of the document's matter; fills the recipient
+  "/api/v1/documents/{document_id}/deliveries/{id}":
+    parameters:
+    - name: document_id
+      in: path
+      required: true
+      schema:
+        type: string
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    patch:
+      summary: Update a delivery (e.g. mark delivered)
+      tags:
+      - Documents
+      security:
+      - bearer: []
+      - oauth2:
+        - documents:write
+      parameters: []
+      responses:
+        '200':
+          description: updated
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                delivery:
+                  type: object
+                  properties:
+                    status:
+                      type: string
+                      enum:
+                      - queued
+                      - sent
+                      - delivered
+                      - failed
+                      - unknown
+                    delivered_at:
+                      type: string
+                      format: date-time
+                    tracking_url:
+                      type: string
+                    provider_id:
+                      type: string
+                    notes:
+                      type: string
   "/api/v1/documents/{id}":
     parameters:
     - name: id
