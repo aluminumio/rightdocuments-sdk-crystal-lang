@@ -3,6 +3,10 @@
 README.md
 git_push.sh
 shard.yml
+spec/models/api_v1_clients_id_patch_request_client_spec.cr
+spec/models/api_v1_clients_id_patch_request_spec.cr
+spec/models/api_v1_clients_post_request_client_spec.cr
+spec/models/api_v1_clients_post_request_spec.cr
 spec/spec_helper.cr
 src/rightdocuments-client.cr
 src/rightdocuments-client/api/catalog_api.cr
@@ -17,6 +21,10 @@ src/rightdocuments-client/api_error.cr
 src/rightdocuments-client/configuration.cr
 src/rightdocuments-client/models/api_v1_catalog_get200_response.cr
 src/rightdocuments-client/models/api_v1_catalog_get200_response_formation_requirements_value_inner.cr
+src/rightdocuments-client/models/api_v1_clients_id_patch_request.cr
+src/rightdocuments-client/models/api_v1_clients_id_patch_request_client.cr
+src/rightdocuments-client/models/api_v1_clients_post_request.cr
+src/rightdocuments-client/models/api_v1_clients_post_request_client.cr
 src/rightdocuments-client/models/api_v1_documents_document_id_deliveries_id_patch_request.cr
 src/rightdocuments-client/models/api_v1_documents_document_id_deliveries_id_patch_request_delivery.cr
 src/rightdocuments-client/models/api_v1_documents_document_id_deliveries_mail_post_request.cr

@@ -53,14 +53,84 @@ paths:
       - bearer: []
       - oauth2:
         - documents:read
+      parameters:
+      - name: status
+        in: query
+        required: false
+        description: prospective, engaged or concluded
+        schema:
+          type: string
+      - name: client_type
+        in: query
+        required: false
+        description: business or individual
+        schema:
+          type: string
       responses:
         '200':
           description: clients
+    post:
+      summary: Create a client
+      tags:
+      - Clients
+      security:
+      - bearer: []
+      - oauth2:
+        - documents:write
+      parameters: []
+      responses:
+        '201':
+          description: created as prospective
+        '422':
+          description: invalid
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '403':
+          description: missing documents:write scope
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - client
+              properties:
+                client:
+                  type: object
+                  required:
+                  - name
+                  - client_type
+                  - email
+                  properties:
+                    name:
+                      type: string
+                    client_type:
+                      type: string
+                      enum:
+                      - business
+                      - individual
+                    email:
+                      type: string
+                    phone:
+                      type: string
+                    address:
+                      type: string
+                    notes:
+                      type: string
+                    entity:
+                      type: string
+                      description: Company UUID or exact name in this organization
   "/api/v1/clients/{id}":
     parameters:
     - name: id
       in: path
-      description: Client UUID or number (e.g. 4 or 0004)
+      description: Client UUID, number (e.g. 4 or 0004), or exact name
       required: true
       schema:
         type: string
@@ -74,9 +144,81 @@ paths:
         - documents:read
       responses:
         '200':
-          description: by number
+          description: by name
         '404':
           description: not in this organization
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+    patch:
+      summary: Update a client
+      tags:
+      - Clients
+      security:
+      - bearer: []
+      - oauth2:
+        - documents:write
+      parameters: []
+      responses:
+        '200':
+          description: admin of the token's organization while the web session is
+            in another
+        '403':
+          description: not an organization admin
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - client
+              properties:
+                client:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    client_type:
+                      type: string
+                      enum:
+                      - business
+                      - individual
+                    email:
+                      type: string
+                    phone:
+                      type: string
+                    address:
+                      type: string
+                    notes:
+                      type: string
+                    status:
+                      type: string
+                      enum:
+                      - prospective
+                      - engaged
+                      - concluded
+                    entity:
+                      type: string
+                      description: Company UUID or exact name; empty string unlinks
+                        it
+    delete:
+      summary: Delete a client
+      tags:
+      - Clients
+      security:
+      - bearer: []
+      - oauth2:
+        - documents:write
+      responses:
+        '204':
+          description: deleted
+        '409':
+          description: has matters
           content:
             application/json:
               schema:

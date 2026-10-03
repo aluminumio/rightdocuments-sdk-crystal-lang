@@ -19,14 +19,14 @@ module RightDocuments
     end
     # List the organization's clients
     # @return [nil]
-    def api_v1_clients_get()
-      api_v1_clients_get_with_http_info()
+    def api_v1_clients_get(status : String?, client_type : String?)
+      api_v1_clients_get_with_http_info(status, client_type)
       nil
     end
 
     # List the organization&#39;s clients
     # @return [Array<(nil, Integer, Hash)>] nil, response status code and response headers
-    def api_v1_clients_get_with_http_info()
+    def api_v1_clients_get_with_http_info(status : String?, client_type : String?)
       if @api_client.config.debugging
         Log.debug {"Calling API: ClientsApi.api_v1_clients_get ..."}
       end
@@ -35,6 +35,8 @@ module RightDocuments
 
       # query parameters
       query_params = Hash(String, String).new
+      query_params["status"] = status.to_s unless status.nil?
+      query_params["client_type"] = client_type.to_s unless client_type.nil?
 
       # header parameters
       header_params = Hash(String, String).new
@@ -66,8 +68,65 @@ module RightDocuments
       return nil, status_code, headers
     end
 
+    # Delete a client
+    # @param id [String] Client UUID, number (e.g. 4 or 0004), or exact name
+    # @return [nil]
+    def api_v1_clients_id_delete(id : String)
+      api_v1_clients_id_delete_with_http_info(id)
+      nil
+    end
+
+    # Delete a client
+    # @param id [String] Client UUID, number (e.g. 4 or 0004), or exact name
+    # @return [Array<(nil, Integer, Hash)>] nil, response status code and response headers
+    def api_v1_clients_id_delete_with_http_info(id : String)
+      if @api_client.config.debugging
+        Log.debug {"Calling API: ClientsApi.api_v1_clients_id_delete ..."}
+      end
+      # verify the required parameter "id" is set
+      if @api_client.config.client_side_validation && id.nil?
+        raise ArgumentError.new("Missing the required parameter 'id' when calling ClientsApi.api_v1_clients_id_delete")
+      end
+      # resource path
+      local_var_path = "/api/v1/clients/{id}".sub("{" + "id" + "}", URI.encode_path(id.to_s))
+
+      # query parameters
+      query_params = Hash(String, String).new
+
+      # header parameters
+      header_params = Hash(String, String).new
+      # HTTP header "Accept" (if needed)
+      header_params["Accept"] = @api_client.select_header_accept(["application/json"])
+
+      # form parameters
+      form_params = Hash(Symbol, (String | ::File)).new
+
+      # http body (model)
+      post_body = nil
+
+      # return_type
+      return_type = nil
+
+      # auth_names
+      auth_names = ["bearer"]
+
+      data, status_code, headers = @api_client.call_api(:DELETE,
+                                                        local_var_path,
+                                                        :"ClientsApi.api_v1_clients_id_delete",
+                                                        return_type,
+                                                        post_body,
+                                                        auth_names,
+                                                        header_params,
+                                                        query_params,
+                                                        form_params)
+      if @api_client.config.debugging
+        Log.debug {"API called: ClientsApi#api_v1_clients_id_delete\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"}
+      end
+      return nil, status_code, headers
+    end
+
     # Show a client
-    # @param id [String] Client UUID or number (e.g. 4 or 0004)
+    # @param id [String] Client UUID, number (e.g. 4 or 0004), or exact name
     # @return [nil]
     def api_v1_clients_id_get(id : String)
       api_v1_clients_id_get_with_http_info(id)
@@ -75,7 +134,7 @@ module RightDocuments
     end
 
     # Show a client
-    # @param id [String] Client UUID or number (e.g. 4 or 0004)
+    # @param id [String] Client UUID, number (e.g. 4 or 0004), or exact name
     # @return [Array<(nil, Integer, Hash)>] nil, response status code and response headers
     def api_v1_clients_id_get_with_http_info(id : String)
       if @api_client.config.debugging
@@ -119,6 +178,118 @@ module RightDocuments
                                                         form_params)
       if @api_client.config.debugging
         Log.debug {"API called: ClientsApi#api_v1_clients_id_get\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"}
+      end
+      return nil, status_code, headers
+    end
+
+    # Update a client
+    # @param id [String] Client UUID, number (e.g. 4 or 0004), or exact name
+    # @return [nil]
+    def api_v1_clients_id_patch(id : String, api_v1_clients_id_patch_request : ApiV1ClientsIdPatchRequest?)
+      api_v1_clients_id_patch_with_http_info(id, api_v1_clients_id_patch_request)
+      nil
+    end
+
+    # Update a client
+    # @param id [String] Client UUID, number (e.g. 4 or 0004), or exact name
+    # @return [Array<(nil, Integer, Hash)>] nil, response status code and response headers
+    def api_v1_clients_id_patch_with_http_info(id : String, api_v1_clients_id_patch_request : ApiV1ClientsIdPatchRequest?)
+      if @api_client.config.debugging
+        Log.debug {"Calling API: ClientsApi.api_v1_clients_id_patch ..."}
+      end
+      # verify the required parameter "id" is set
+      if @api_client.config.client_side_validation && id.nil?
+        raise ArgumentError.new("Missing the required parameter 'id' when calling ClientsApi.api_v1_clients_id_patch")
+      end
+      # resource path
+      local_var_path = "/api/v1/clients/{id}".sub("{" + "id" + "}", URI.encode_path(id.to_s))
+
+      # query parameters
+      query_params = Hash(String, String).new
+
+      # header parameters
+      header_params = Hash(String, String).new
+      # HTTP header "Accept" (if needed)
+      header_params["Accept"] = @api_client.select_header_accept(["application/json"])
+      # HTTP header "Content-Type"
+      header_params["Content-Type"] = @api_client.select_header_content_type(["application/json"])
+
+      # form parameters
+      form_params = Hash(Symbol, (String | ::File)).new
+
+      # http body (model)
+      post_body = api_v1_clients_id_patch_request.to_json
+
+      # return_type
+      return_type = nil
+
+      # auth_names
+      auth_names = ["bearer"]
+
+      data, status_code, headers = @api_client.call_api(:PATCH,
+                                                        local_var_path,
+                                                        :"ClientsApi.api_v1_clients_id_patch",
+                                                        return_type,
+                                                        post_body,
+                                                        auth_names,
+                                                        header_params,
+                                                        query_params,
+                                                        form_params)
+      if @api_client.config.debugging
+        Log.debug {"API called: ClientsApi#api_v1_clients_id_patch\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"}
+      end
+      return nil, status_code, headers
+    end
+
+    # Create a client
+    # @return [nil]
+    def api_v1_clients_post(api_v1_clients_post_request : ApiV1ClientsPostRequest?)
+      api_v1_clients_post_with_http_info(api_v1_clients_post_request)
+      nil
+    end
+
+    # Create a client
+    # @return [Array<(nil, Integer, Hash)>] nil, response status code and response headers
+    def api_v1_clients_post_with_http_info(api_v1_clients_post_request : ApiV1ClientsPostRequest?)
+      if @api_client.config.debugging
+        Log.debug {"Calling API: ClientsApi.api_v1_clients_post ..."}
+      end
+      # resource path
+      local_var_path = "/api/v1/clients"
+
+      # query parameters
+      query_params = Hash(String, String).new
+
+      # header parameters
+      header_params = Hash(String, String).new
+      # HTTP header "Accept" (if needed)
+      header_params["Accept"] = @api_client.select_header_accept(["application/json"])
+      # HTTP header "Content-Type"
+      header_params["Content-Type"] = @api_client.select_header_content_type(["application/json"])
+
+      # form parameters
+      form_params = Hash(Symbol, (String | ::File)).new
+
+      # http body (model)
+      post_body = api_v1_clients_post_request.to_json
+
+      # return_type
+      return_type = nil
+
+      # auth_names
+      auth_names = ["bearer"]
+
+      data, status_code, headers = @api_client.call_api(:POST,
+                                                        local_var_path,
+                                                        :"ClientsApi.api_v1_clients_post",
+                                                        return_type,
+                                                        post_body,
+                                                        auth_names,
+                                                        header_params,
+                                                        query_params,
+                                                        form_params)
+      if @api_client.config.debugging
+        Log.debug {"API called: ClientsApi#api_v1_clients_post\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"}
       end
       return nil, status_code, headers
     end
