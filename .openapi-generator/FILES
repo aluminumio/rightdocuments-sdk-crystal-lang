@@ -3,7 +3,6 @@
 README.md
 git_push.sh
 shard.yml
-spec/models/api_v1_documents_document_id_deliveries_mail_post_request_spec.cr
 spec/spec_helper.cr
 src/rightdocuments-client.cr
 src/rightdocuments-client/api/catalog_api.cr
