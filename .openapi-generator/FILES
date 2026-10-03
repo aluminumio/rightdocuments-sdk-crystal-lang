@@ -3,14 +3,6 @@
 README.md
 git_push.sh
 shard.yml
-spec/api/clients_api_spec.cr
-spec/api/matters_api_spec.cr
-spec/models/api_v1_matters_id_patch_request_matter_spec.cr
-spec/models/api_v1_matters_id_patch_request_spec.cr
-spec/models/api_v1_matters_matter_id_parties_post_request_party_spec.cr
-spec/models/api_v1_matters_matter_id_parties_post_request_spec.cr
-spec/models/api_v1_matters_post_request_matter_spec.cr
-spec/models/api_v1_matters_post_request_spec.cr
 spec/spec_helper.cr
 src/rightdocuments-client.cr
 src/rightdocuments-client/api/catalog_api.cr

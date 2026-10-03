@@ -89,7 +89,7 @@ paths:
       schema:
         type: string
     delete:
-      summary: Delete a document
+      summary: Delete a voided document permanently (admins only)
       tags:
       - Documents
       security:
@@ -99,8 +99,14 @@ paths:
       responses:
         '204':
           description: deleted
+        '409':
+          description: not voided yet
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
         '403':
-          description: missing documents:write scope
+          description: not an admin
           content:
             application/json:
               schema:
@@ -219,6 +225,48 @@ paths:
             application/json:
               schema:
                 "$ref": "#/components/schemas/Error"
+  "/api/v1/documents/{id}/void":
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    post:
+      summary: Void a document (hide it from lists and checklists)
+      tags:
+      - Documents
+      security:
+      - bearer: []
+      - oauth2:
+        - documents:write
+      responses:
+        '200':
+          description: voided
+        '403':
+          description: missing documents:write scope
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+  "/api/v1/documents/{id}/restore":
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    post:
+      summary: Restore a voided document
+      tags:
+      - Documents
+      security:
+      - bearer: []
+      - oauth2:
+        - documents:write
+      responses:
+        '200':
+          description: restored
   "/api/v1/entities":
     get:
       summary: List entities in the token's organization
