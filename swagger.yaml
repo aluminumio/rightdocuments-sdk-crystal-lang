@@ -446,6 +446,40 @@ paths:
                 confirm:
                   type: boolean
                   description: 'Must be true: this sends a real, paid letter'
+  "/api/v1/documents/{document_id}/files/{id}":
+    parameters:
+    - name: document_id
+      in: path
+      required: true
+      schema:
+        type: string
+    - name: id
+      in: path
+      description: executed, unsigned, certificate, original, or the key of an asset
+        (see `files` on the document)
+      required: true
+      schema:
+        type: string
+    get:
+      summary: Download one stored file of a document
+      tags:
+      - Documents
+      security:
+      - bearer: []
+      - oauth2:
+        - documents:read
+      responses:
+        '200':
+          description: an asset by key
+        '404':
+          description: document in another organization
+          content:
+            application/pdf:
+              schema:
+                "$ref": "#/components/schemas/Error"
+            application/octet-stream:
+              schema:
+                "$ref": "#/components/schemas/Error"
   "/api/v1/documents/{id}":
     parameters:
     - name: id

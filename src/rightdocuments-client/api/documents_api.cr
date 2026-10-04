@@ -316,6 +316,69 @@ module RightDocuments
       return nil, status_code, headers
     end
 
+    # Download one stored file of a document
+    # @param document_id [String] 
+    # @param id [String] executed, unsigned, certificate, original, or the key of an asset (see &#x60;files&#x60; on the document)
+    # @return [nil]
+    def api_v1_documents_document_id_files_id_get(document_id : String, id : String)
+      api_v1_documents_document_id_files_id_get_with_http_info(document_id, id)
+      nil
+    end
+
+    # Download one stored file of a document
+    # @param document_id [String] 
+    # @param id [String] executed, unsigned, certificate, original, or the key of an asset (see &#x60;files&#x60; on the document)
+    # @return [Array<(nil, Integer, Hash)>] nil, response status code and response headers
+    def api_v1_documents_document_id_files_id_get_with_http_info(document_id : String, id : String)
+      if @api_client.config.debugging
+        Log.debug {"Calling API: DocumentsApi.api_v1_documents_document_id_files_id_get ..."}
+      end
+      # verify the required parameter "document_id" is set
+      if @api_client.config.client_side_validation && document_id.nil?
+        raise ArgumentError.new("Missing the required parameter 'document_id' when calling DocumentsApi.api_v1_documents_document_id_files_id_get")
+      end
+      # verify the required parameter "id" is set
+      if @api_client.config.client_side_validation && id.nil?
+        raise ArgumentError.new("Missing the required parameter 'id' when calling DocumentsApi.api_v1_documents_document_id_files_id_get")
+      end
+      # resource path
+      local_var_path = "/api/v1/documents/{document_id}/files/{id}".sub("{" + "document_id" + "}", URI.encode_path(document_id.to_s)).sub("{" + "id" + "}", URI.encode_path(id.to_s))
+
+      # query parameters
+      query_params = Hash(String, String).new
+
+      # header parameters
+      header_params = Hash(String, String).new
+      # HTTP header "Accept" (if needed)
+      header_params["Accept"] = @api_client.select_header_accept(["application/pdf", "application/octet-stream"])
+
+      # form parameters
+      form_params = Hash(Symbol, (String | ::File)).new
+
+      # http body (model)
+      post_body = nil
+
+      # return_type
+      return_type = nil
+
+      # auth_names
+      auth_names = ["bearer"]
+
+      data, status_code, headers = @api_client.call_api(:GET,
+                                                        local_var_path,
+                                                        :"DocumentsApi.api_v1_documents_document_id_files_id_get",
+                                                        return_type,
+                                                        post_body,
+                                                        auth_names,
+                                                        header_params,
+                                                        query_params,
+                                                        form_params)
+      if @api_client.config.debugging
+        Log.debug {"API called: DocumentsApi#api_v1_documents_document_id_files_id_get\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"}
+      end
+      return nil, status_code, headers
+    end
+
     # Delete a voided document permanently (admins only)
     # @param id [String] 
     # @return [nil]
