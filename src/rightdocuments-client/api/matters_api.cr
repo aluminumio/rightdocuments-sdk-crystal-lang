@@ -68,6 +68,65 @@ module RightDocuments
       return nil, status_code, headers
     end
 
+    # Delete a matter opened in error
+    # Organization admins only. Deletes the matter with its parties and deadlines. A matter with documents, voided ones included, is refused: void and delete them first. The matter number is not reused.
+    # @param id [String] Matter UUID or number (e.g. 0004-001 or 4-1)
+    # @return [nil]
+    def api_v1_matters_id_delete(id : String)
+      api_v1_matters_id_delete_with_http_info(id)
+      nil
+    end
+
+    # Delete a matter opened in error
+    # Organization admins only. Deletes the matter with its parties and deadlines. A matter with documents, voided ones included, is refused: void and delete them first. The matter number is not reused.
+    # @param id [String] Matter UUID or number (e.g. 0004-001 or 4-1)
+    # @return [Array<(nil, Integer, Hash)>] nil, response status code and response headers
+    def api_v1_matters_id_delete_with_http_info(id : String)
+      if @api_client.config.debugging
+        Log.debug {"Calling API: MattersApi.api_v1_matters_id_delete ..."}
+      end
+      # verify the required parameter "id" is set
+      if @api_client.config.client_side_validation && id.nil?
+        raise ArgumentError.new("Missing the required parameter 'id' when calling MattersApi.api_v1_matters_id_delete")
+      end
+      # resource path
+      local_var_path = "/api/v1/matters/{id}".sub("{" + "id" + "}", URI.encode_path(id.to_s))
+
+      # query parameters
+      query_params = Hash(String, String).new
+
+      # header parameters
+      header_params = Hash(String, String).new
+      # HTTP header "Accept" (if needed)
+      header_params["Accept"] = @api_client.select_header_accept(["application/json"])
+
+      # form parameters
+      form_params = Hash(Symbol, (String | ::File)).new
+
+      # http body (model)
+      post_body = nil
+
+      # return_type
+      return_type = nil
+
+      # auth_names
+      auth_names = ["bearer"]
+
+      data, status_code, headers = @api_client.call_api(:DELETE,
+                                                        local_var_path,
+                                                        :"MattersApi.api_v1_matters_id_delete",
+                                                        return_type,
+                                                        post_body,
+                                                        auth_names,
+                                                        header_params,
+                                                        query_params,
+                                                        form_params)
+      if @api_client.config.debugging
+        Log.debug {"API called: MattersApi#api_v1_matters_id_delete\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"}
+      end
+      return nil, status_code, headers
+    end
+
     # Show a matter with its parties
     # @param id [String] Matter UUID or number (e.g. 0004-001 or 4-1)
     # @return [nil]

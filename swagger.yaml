@@ -1219,6 +1219,32 @@ paths:
                       type: string
                     outcome:
                       type: string
+    delete:
+      summary: Delete a matter opened in error
+      tags:
+      - Matters
+      security:
+      - bearer: []
+      - oauth2:
+        - documents:write
+      description: 'Organization admins only. Deletes the matter with its parties
+        and deadlines. A matter with documents, voided ones included, is refused:
+        void and delete them first. The matter number is not reused.'
+      responses:
+        '204':
+          description: deleted
+        '403':
+          description: not an organization admin
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '409':
+          description: has documents
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
   "/api/v1/matters/{matter_id}/parties":
     parameters:
     - name: matter_id
