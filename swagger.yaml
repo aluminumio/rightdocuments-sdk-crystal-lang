@@ -223,6 +223,31 @@ paths:
             application/json:
               schema:
                 "$ref": "#/components/schemas/Error"
+  "/api/v1/clients/{client_id}/documents":
+    parameters:
+    - name: client_id
+      in: path
+      description: Client UUID, number (e.g. 4 or 0004), or exact name
+      required: true
+      schema:
+        type: string
+    get:
+      summary: List a client's documents
+      tags:
+      - Clients
+      security:
+      - bearer: []
+      - oauth2:
+        - documents:read
+      responses:
+        '200':
+          description: active documents under any of the client's matters or none
+        '404':
+          description: not in this organization
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
   "/api/v1/documents/{document_id}/deliveries":
     parameters:
     - name: document_id

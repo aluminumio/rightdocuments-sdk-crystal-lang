@@ -17,6 +17,63 @@ module RightDocuments
     def initialize(api_client = ApiClient.default)
       @api_client = api_client
     end
+    # List a client's documents
+    # @param client_id [String] Client UUID, number (e.g. 4 or 0004), or exact name
+    # @return [nil]
+    def api_v1_clients_client_id_documents_get(client_id : String)
+      api_v1_clients_client_id_documents_get_with_http_info(client_id)
+      nil
+    end
+
+    # List a client&#39;s documents
+    # @param client_id [String] Client UUID, number (e.g. 4 or 0004), or exact name
+    # @return [Array<(nil, Integer, Hash)>] nil, response status code and response headers
+    def api_v1_clients_client_id_documents_get_with_http_info(client_id : String)
+      if @api_client.config.debugging
+        Log.debug {"Calling API: ClientsApi.api_v1_clients_client_id_documents_get ..."}
+      end
+      # verify the required parameter "client_id" is set
+      if @api_client.config.client_side_validation && client_id.nil?
+        raise ArgumentError.new("Missing the required parameter 'client_id' when calling ClientsApi.api_v1_clients_client_id_documents_get")
+      end
+      # resource path
+      local_var_path = "/api/v1/clients/{client_id}/documents".sub("{" + "client_id" + "}", URI.encode_path(client_id.to_s))
+
+      # query parameters
+      query_params = Hash(String, String).new
+
+      # header parameters
+      header_params = Hash(String, String).new
+      # HTTP header "Accept" (if needed)
+      header_params["Accept"] = @api_client.select_header_accept(["application/json"])
+
+      # form parameters
+      form_params = Hash(Symbol, (String | ::File)).new
+
+      # http body (model)
+      post_body = nil
+
+      # return_type
+      return_type = nil
+
+      # auth_names
+      auth_names = ["bearer"]
+
+      data, status_code, headers = @api_client.call_api(:GET,
+                                                        local_var_path,
+                                                        :"ClientsApi.api_v1_clients_client_id_documents_get",
+                                                        return_type,
+                                                        post_body,
+                                                        auth_names,
+                                                        header_params,
+                                                        query_params,
+                                                        form_params)
+      if @api_client.config.debugging
+        Log.debug {"API called: ClientsApi#api_v1_clients_client_id_documents_get\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"}
+      end
+      return nil, status_code, headers
+    end
+
     # List the organization's clients
     # @return [nil]
     def api_v1_clients_get(status : String?, client_type : String?)
