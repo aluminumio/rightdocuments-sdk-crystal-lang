@@ -318,7 +318,7 @@ module RightDocuments
 
     # Download one stored file of a document
     # @param document_id [String] 
-    # @param id [String] executed, unsigned, certificate, original, or the key of an asset (see &#x60;files&#x60; on the document)
+    # @param id [String] executed, unsigned, certificate, original, filed (the asset marked as the filed copy), or the key of an asset (see &#x60;files&#x60; on the document)
     # @return [nil]
     def api_v1_documents_document_id_files_id_get(document_id : String, id : String)
       api_v1_documents_document_id_files_id_get_with_http_info(document_id, id)
@@ -327,7 +327,7 @@ module RightDocuments
 
     # Download one stored file of a document
     # @param document_id [String] 
-    # @param id [String] executed, unsigned, certificate, original, or the key of an asset (see &#x60;files&#x60; on the document)
+    # @param id [String] executed, unsigned, certificate, original, filed (the asset marked as the filed copy), or the key of an asset (see &#x60;files&#x60; on the document)
     # @return [Array<(nil, Integer, Hash)>] nil, response status code and response headers
     def api_v1_documents_document_id_files_id_get_with_http_info(document_id : String, id : String)
       if @api_client.config.debugging

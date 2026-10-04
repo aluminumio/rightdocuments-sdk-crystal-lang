@@ -455,8 +455,8 @@ paths:
         type: string
     - name: id
       in: path
-      description: executed, unsigned, certificate, original, or the key of an asset
-        (see `files` on the document)
+      description: executed, unsigned, certificate, original, filed (the asset marked
+        as the filed copy), or the key of an asset (see `files` on the document)
       required: true
       schema:
         type: string
