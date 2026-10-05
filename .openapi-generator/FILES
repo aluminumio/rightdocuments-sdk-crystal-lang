@@ -3,10 +3,16 @@
 README.md
 git_push.sh
 shard.yml
+spec/api/court_cases_api_spec.cr
+spec/models/api_v1_court_cases_id_patch_request_court_case_spec.cr
+spec/models/api_v1_court_cases_id_patch_request_spec.cr
+spec/models/api_v1_matters_matter_id_court_cases_post_request_court_case_spec.cr
+spec/models/api_v1_matters_matter_id_court_cases_post_request_spec.cr
 spec/spec_helper.cr
 src/rightdocuments-client.cr
 src/rightdocuments-client/api/catalog_api.cr
 src/rightdocuments-client/api/clients_api.cr
+src/rightdocuments-client/api/court_cases_api.cr
 src/rightdocuments-client/api/documents_api.cr
 src/rightdocuments-client/api/entities_api.cr
 src/rightdocuments-client/api/matters_api.cr
@@ -21,6 +27,8 @@ src/rightdocuments-client/models/api_v1_clients_id_patch_request.cr
 src/rightdocuments-client/models/api_v1_clients_id_patch_request_client.cr
 src/rightdocuments-client/models/api_v1_clients_post_request.cr
 src/rightdocuments-client/models/api_v1_clients_post_request_client.cr
+src/rightdocuments-client/models/api_v1_court_cases_id_patch_request.cr
+src/rightdocuments-client/models/api_v1_court_cases_id_patch_request_court_case.cr
 src/rightdocuments-client/models/api_v1_documents_document_id_deliveries_id_patch_request.cr
 src/rightdocuments-client/models/api_v1_documents_document_id_deliveries_id_patch_request_delivery.cr
 src/rightdocuments-client/models/api_v1_documents_document_id_deliveries_mail_post_request.cr
@@ -35,6 +43,8 @@ src/rightdocuments-client/models/api_v1_entities_post_request.cr
 src/rightdocuments-client/models/api_v1_entities_post_request_entity.cr
 src/rightdocuments-client/models/api_v1_matters_id_patch_request.cr
 src/rightdocuments-client/models/api_v1_matters_id_patch_request_matter.cr
+src/rightdocuments-client/models/api_v1_matters_matter_id_court_cases_post_request.cr
+src/rightdocuments-client/models/api_v1_matters_matter_id_court_cases_post_request_court_case.cr
 src/rightdocuments-client/models/api_v1_matters_matter_id_deadlines_post_request.cr
 src/rightdocuments-client/models/api_v1_matters_matter_id_deadlines_post_request_deadline.cr
 src/rightdocuments-client/models/api_v1_matters_matter_id_parties_post_request.cr

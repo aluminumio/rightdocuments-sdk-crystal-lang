@@ -248,6 +248,209 @@ paths:
             application/json:
               schema:
                 "$ref": "#/components/schemas/Error"
+  "/api/v1/court_cases/{court_case_id}/filings":
+    parameters:
+    - name: court_case_id
+      in: path
+      description: Court case UUID, its case number, or the matter number when the
+        matter has one case
+      required: true
+      schema:
+        type: string
+    get:
+      summary: List a court case's filings
+      tags:
+      - Court cases
+      security:
+      - bearer: []
+      - oauth2:
+        - documents:read
+      responses:
+        '200':
+          description: filings
+    post:
+      summary: Record a court filing
+      description: document is the as-filed copy, already filed under the case's matter.
+        With endorsed (the court's stamped PDF) the PDF becomes an asset of that document
+        and its filed copy, the filing is accepted on filed_on, and case_number and
+        filed_on are written to the court case with that document as the source. Without
+        endorsed the filing is submitted and case_number / filed_on are refused.
+      tags:
+      - Court cases
+      security:
+      - bearer: []
+      - oauth2:
+        - documents:write
+      parameters: []
+      responses:
+        '201':
+          description: submitted, not yet accepted
+        '422':
+          description: a document of another matter
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '404':
+          description: a document of another organization
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: string
+        required: true
+        description: Document UUID (the as-filed copy)
+  "/api/v1/matters/{matter_id}/court_cases":
+    parameters:
+    - name: matter_id
+      in: path
+      description: Matter UUID or number (e.g. 0004-001)
+      required: true
+      schema:
+        type: string
+    get:
+      summary: List a matter's court cases
+      tags:
+      - Court cases
+      security:
+      - bearer: []
+      - oauth2:
+        - documents:read
+      responses:
+        '200':
+          description: court cases
+    post:
+      summary: Open a court case (before filing)
+      description: 'Opens a case shell with the intended court. The case number and
+        filed date are facts: only a filing with the endorsed copy sets them (POST
+        /api/v1/court_cases/{id}/filings).'
+      tags:
+      - Court cases
+      security:
+      - bearer: []
+      - oauth2:
+        - documents:write
+      parameters: []
+      responses:
+        '201':
+          description: opened
+        '422':
+          description: a fact in the body
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '403':
+          description: missing documents:write scope
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - court_case
+              properties:
+                court_case:
+                  type: object
+                  required:
+                  - court_name
+                  - court_code
+                  - case_type
+                  properties:
+                    court_name:
+                      type: string
+                      example: Superior Court of California, County of San Francisco
+                    court_code:
+                      type: string
+                      example: ca_sf_superior
+                    case_type:
+                      type: string
+                      enum:
+                      - limited
+                      - unlimited
+                      - other
+                    jury_demanded:
+                      type: boolean
+                    efsp:
+                      type: string
+                      description: E-filing service provider
+  "/api/v1/court_cases/{id}":
+    parameters:
+    - name: id
+      in: path
+      description: Court case UUID, its case number, or the matter number when the
+        matter has one case
+      required: true
+      schema:
+        type: string
+    get:
+      summary: Show a court case with its filings and the source of each fact
+      tags:
+      - Court cases
+      security:
+      - bearer: []
+      - oauth2:
+        - documents:read
+      responses:
+        '200':
+          description: court case
+        '404':
+          description: a case of another organization
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+    patch:
+      summary: Change a court case's non-fact fields
+      description: 'Changes court_name, efsp, efsp_reference or status. case_number
+        and filed_on are refused: record a filing with the endorsed copy instead.'
+      tags:
+      - Court cases
+      security:
+      - bearer: []
+      - oauth2:
+        - documents:write
+      parameters: []
+      responses:
+        '200':
+          description: changed
+        '422':
+          description: a fact in the body
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - court_case
+              properties:
+                court_case:
+                  type: object
+                  properties:
+                    court_name:
+                      type: string
+                    efsp:
+                      type: string
+                    efsp_reference:
+                      type: string
+                    status:
+                      type: string
+                      enum:
+                      - pre_filing
+                      - open
+                      - closed
   "/api/v1/documents/{document_id}/deliveries":
     parameters:
     - name: document_id
