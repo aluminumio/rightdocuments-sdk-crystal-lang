@@ -72,8 +72,8 @@ module RightDocuments
       return nil, status_code, headers
     end
 
-    # Record a court filing
-    # document is the as-filed copy, already filed under the case's matter. With endorsed (the court's stamped PDF) the PDF becomes an asset of that document and its filed copy, the filing is accepted on filed_on, and case_number and filed_on are written to the court case with that document as the source. Without endorsed the filing is submitted and case_number / filed_on are refused.
+    # Record a court filing (a court submission)
+    # Kept for older clients; new clients use POST /api/v1/documents/{id}/submissions and POST /api/v1/submissions/{id}/accept. document is the as-filed copy, already filed under the case's matter. Without endorsed a court submission is added (status submitted) and case_number / filed_on are refused. With endorsed (the court's stamped PDF) and filed_on, the open submission of the document in this case (or a new one) is accepted: the PDF becomes an asset of the document and its filed copy, and case_number and filed_on are written to the court case with that document as the source.
     # @param court_case_id [String] Court case UUID, its case number, or the matter number when the matter has one case
     # @return [nil]
     def api_v1_court_cases_court_case_id_filings_post(court_case_id : String)
@@ -81,8 +81,8 @@ module RightDocuments
       nil
     end
 
-    # Record a court filing
-    # document is the as-filed copy, already filed under the case&#39;s matter. With endorsed (the court&#39;s stamped PDF) the PDF becomes an asset of that document and its filed copy, the filing is accepted on filed_on, and case_number and filed_on are written to the court case with that document as the source. Without endorsed the filing is submitted and case_number / filed_on are refused.
+    # Record a court filing (a court submission)
+    # Kept for older clients; new clients use POST /api/v1/documents/{id}/submissions and POST /api/v1/submissions/{id}/accept. document is the as-filed copy, already filed under the case&#39;s matter. Without endorsed a court submission is added (status submitted) and case_number / filed_on are refused. With endorsed (the court&#39;s stamped PDF) and filed_on, the open submission of the document in this case (or a new one) is accepted: the PDF becomes an asset of the document and its filed copy, and case_number and filed_on are written to the court case with that document as the source.
     # @param court_case_id [String] Court case UUID, its case number, or the matter number when the matter has one case
     # @return [Array<(nil, Integer, Hash)>] nil, response status code and response headers
     def api_v1_court_cases_court_case_id_filings_post_with_http_info(court_case_id : String)
@@ -191,7 +191,7 @@ module RightDocuments
     end
 
     # Change a court case's non-fact fields
-    # Changes court_name, efsp, efsp_reference or status. case_number and filed_on are refused: record a filing with the endorsed copy instead.
+    # Changes court_name, efsp, efsp_reference or status. case_number and filed_on are refused: record the acceptance or endorsed copy on the court submission instead.
     # @param id [String] Court case UUID, its case number, or the matter number when the matter has one case
     # @return [nil]
     def api_v1_court_cases_id_patch(id : String, api_v1_court_cases_id_patch_request : ApiV1CourtCasesIdPatchRequest?)
@@ -200,7 +200,7 @@ module RightDocuments
     end
 
     # Change a court case&#39;s non-fact fields
-    # Changes court_name, efsp, efsp_reference or status. case_number and filed_on are refused: record a filing with the endorsed copy instead.
+    # Changes court_name, efsp, efsp_reference or status. case_number and filed_on are refused: record the acceptance or endorsed copy on the court submission instead.
     # @param id [String] Court case UUID, its case number, or the matter number when the matter has one case
     # @return [Array<(nil, Integer, Hash)>] nil, response status code and response headers
     def api_v1_court_cases_id_patch_with_http_info(id : String, api_v1_court_cases_id_patch_request : ApiV1CourtCasesIdPatchRequest?)
@@ -307,7 +307,7 @@ module RightDocuments
     end
 
     # Open a court case (before filing)
-    # Opens a case shell with the intended court. The case number and filed date are facts: only a filing with the endorsed copy sets them (POST /api/v1/court_cases/{id}/filings).
+    # Opens a case shell with the intended court. The case number and filed date are facts: only the court's acceptance or endorsed copy of a court submission sets them (POST /api/v1/submissions/{id}/accept).
     # @param matter_id [String] Matter UUID or number (e.g. 0004-001)
     # @return [nil]
     def api_v1_matters_matter_id_court_cases_post(matter_id : String, api_v1_matters_matter_id_court_cases_post_request : ApiV1MattersMatterIdCourtCasesPostRequest?)
@@ -316,7 +316,7 @@ module RightDocuments
     end
 
     # Open a court case (before filing)
-    # Opens a case shell with the intended court. The case number and filed date are facts: only a filing with the endorsed copy sets them (POST /api/v1/court_cases/{id}/filings).
+    # Opens a case shell with the intended court. The case number and filed date are facts: only the court&#39;s acceptance or endorsed copy of a court submission sets them (POST /api/v1/submissions/{id}/accept).
     # @param matter_id [String] Matter UUID or number (e.g. 0004-001)
     # @return [Array<(nil, Integer, Hash)>] nil, response status code and response headers
     def api_v1_matters_matter_id_court_cases_post_with_http_info(matter_id : String, api_v1_matters_matter_id_court_cases_post_request : ApiV1MattersMatterIdCourtCasesPostRequest?)

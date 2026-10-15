@@ -269,12 +269,15 @@ paths:
         '200':
           description: filings
     post:
-      summary: Record a court filing
-      description: document is the as-filed copy, already filed under the case's matter.
-        With endorsed (the court's stamped PDF) the PDF becomes an asset of that document
-        and its filed copy, the filing is accepted on filed_on, and case_number and
-        filed_on are written to the court case with that document as the source. Without
-        endorsed the filing is submitted and case_number / filed_on are refused.
+      summary: Record a court filing (a court submission)
+      description: 'Kept for older clients; new clients use POST /api/v1/documents/{id}/submissions
+        and POST /api/v1/submissions/{id}/accept. document is the as-filed copy, already
+        filed under the case''s matter. Without endorsed a court submission is added
+        (status submitted) and case_number / filed_on are refused. With endorsed (the
+        court''s stamped PDF) and filed_on, the open submission of the document in
+        this case (or a new one) is accepted: the PDF becomes an asset of the document
+        and its filed copy, and case_number and filed_on are written to the court
+        case with that document as the source.'
       tags:
       - Court cases
       security:
@@ -284,7 +287,7 @@ paths:
       parameters: []
       responses:
         '201':
-          description: submitted, not yet accepted
+          description: the endorsed copy accepts the filing submitted earlier
         '422':
           description: a document of another matter
           content:
@@ -326,8 +329,8 @@ paths:
     post:
       summary: Open a court case (before filing)
       description: 'Opens a case shell with the intended court. The case number and
-        filed date are facts: only a filing with the endorsed copy sets them (POST
-        /api/v1/court_cases/{id}/filings).'
+        filed date are facts: only the court''s acceptance or endorsed copy of a court
+        submission sets them (POST /api/v1/submissions/{id}/accept).'
       tags:
       - Court cases
       security:
@@ -411,7 +414,8 @@ paths:
     patch:
       summary: Change a court case's non-fact fields
       description: 'Changes court_name, efsp, efsp_reference or status. case_number
-        and filed_on are refused: record a filing with the endorsed copy instead.'
+        and filed_on are refused: record the acceptance or endorsed copy on the court
+        submission instead.'
       tags:
       - Court cases
       security:
@@ -1633,6 +1637,325 @@ paths:
             application/json:
               schema:
                 "$ref": "#/components/schemas/Error"
+  "/api/v1/documents/{document_id}/submissions":
+    parameters:
+    - name: document_id
+      in: path
+      description: Document UUID
+      required: true
+      schema:
+        type: string
+    get:
+      summary: List a document's submissions
+      tags:
+      - Submissions
+      security:
+      - bearer: []
+      - oauth2:
+        - documents:read
+      responses:
+        '200':
+          description: submissions with their history
+        '404':
+          description: a document of another organization
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+    post:
+      summary: Add a submission of the document
+      description: Records that the document was sent to an authority or a party.
+        Nothing is proven until what comes back is recorded (POST /api/v1/submissions/{id}/accept).
+        A court submission belongs to a court case of the document's matter (court_case
+        may be left out when the matter has one). Times without an offset are read
+        in the authority's time zone (the court's calendar, or by jurisdiction).
+      tags:
+      - Submissions
+      security:
+      - bearer: []
+      - oauth2:
+        - documents:write
+      parameters: []
+      responses:
+        '201':
+          description: submitted to the court
+        '422':
+          description: an unknown recipient kind
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - recipient_kind
+              properties:
+                recipient_kind:
+                  type: string
+                  enum:
+                  - court
+                  - secretary_of_state
+                  - irs
+                  - other_agency
+                  - party
+                  - sos
+                  - agency
+                recipient_name:
+                  type: string
+                  example: Delaware Division of Corporations
+                jurisdiction:
+                  type: string
+                  example: DE
+                channel:
+                  type: string
+                  enum:
+                  - efsp
+                  - online_portal
+                  - mail
+                  - hand
+                  - email
+                  - other
+                channel_provider:
+                  type: string
+                  example: One Legal
+                submitted_at:
+                  type: string
+                  example: 2026-10-10T22:40
+                reference:
+                  type: string
+                  description: Envelope, order or transaction number
+                fees:
+                  type: string
+                  example: '435.00'
+                notes:
+                  type: string
+                time_zone:
+                  type: string
+                  example: America/Los_Angeles
+                court_case:
+                  type: string
+                  description: Court case UUID or case number (court submissions)
+                filing_kind:
+                  type: string
+                  enum:
+                  - complaint
+                  - other
+                  description: Court submissions
+                delivery_id:
+                  type: string
+                  description: A delivery of this document to link (a letter to a
+                    party)
+  "/api/v1/submissions/{id}":
+    parameters:
+    - name: id
+      in: path
+      description: Submission UUID
+      required: true
+      schema:
+        type: string
+    get:
+      summary: 'Show a submission: status, history, and the facts it proved'
+      tags:
+      - Submissions
+      security:
+      - bearer: []
+      - oauth2:
+        - documents:read
+      responses:
+        '200':
+          description: submission
+        '404':
+          description: a submission of another organization
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+  "/api/v1/submissions/{id}/receipt":
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    post:
+      summary: Record the submission receipt (proves nothing)
+      tags:
+      - Submissions
+      security:
+      - bearer: []
+      - oauth2:
+        - documents:write
+      parameters: []
+      responses:
+        '201':
+          description: receipt kept
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: file
+        description: The receipt
+  "/api/v1/submissions/{id}/accept":
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    post:
+      summary: Record the acceptance or the filed copy (proves the facts)
+      description: 'returned: acceptance (the authority''s confirmation; needs received_at),
+        filed_copy (the stamped or endorsed copy, the default; becomes the document''s
+        filed copy and accepts an open submission with received_at or filed_on) or
+        certified_copy (of an accepted submission). file is required. A court submission
+        received electronically on a non-court day is deemed filed the next court
+        day (CCP 1010.6(e)(3); CRC 2.259); outside the court''s calendar the filed
+        date stays empty with a warning. Facts: court: case_number (filed_on goes
+        to the case); secretary_of_state: file_number, formation_date (defaults to
+        the filed date for a state-filing document of a company without one); irs:
+        ein. They are written with the document as their source. dry_run=true returns
+        the plan only.'
+      tags:
+      - Submissions
+      security:
+      - bearer: []
+      - oauth2:
+        - documents:write
+      parameters: []
+      responses:
+        '201':
+          description: 'accepted Sat Oct 10 at 11 p.m.: deemed filed Mon Oct 12'
+        '200':
+          description: 'dry run: the plan, nothing written'
+        '422':
+          description: an acceptance without the received time
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: file
+        required: true
+        description: The returned file (PDF for a copy)
+  "/api/v1/submissions/{id}/reject":
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    post:
+      summary: Record a rejection (proves nothing; resubmit with a new submission)
+      tags:
+      - Submissions
+      security:
+      - bearer: []
+      - oauth2:
+        - documents:write
+      parameters: []
+      responses:
+        '201':
+          description: rejected
+        '422':
+          description: no reason
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: string
+        required: true
+  "/api/v1/submissions/{id}/correct":
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    post:
+      summary: Correct a submission (logged with a reason)
+      description: 'Needs reason, and the person who made or recorded the submission
+        or an organization admin. Fields: submitted_at, received_at, filed_on, reference,
+        channel, channel_provider, recipient_name, jurisdiction, fees, notes, rejection_reason,
+        status (only withdrawn, from submitted), and on an accepted submission the
+        facts it proves. A new received time recomputes the filed date.'
+      tags:
+      - Submissions
+      security:
+      - bearer: []
+      - oauth2:
+        - documents:write
+      parameters: []
+      responses:
+        '200':
+          description: corrected
+        '403':
+          description: another member who did not record it
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '422':
+          description: nothing but a reason
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - reason
+              properties:
+                reason:
+                  type: string
+                received_at:
+                  type: string
+                filed_on:
+                  type: string
+                  format: date
+                submitted_at:
+                  type: string
+                reference:
+                  type: string
+                channel:
+                  type: string
+                channel_provider:
+                  type: string
+                recipient_name:
+                  type: string
+                jurisdiction:
+                  type: string
+                fees:
+                  type: string
+                notes:
+                  type: string
+                rejection_reason:
+                  type: string
+                status:
+                  type: string
+                  enum:
+                  - withdrawn
+                case_number:
+                  type: string
+                file_number:
+                  type: string
+                formation_date:
+                  type: string
+                  format: date
+                ein:
+                  type: string
   "/api/v1/templates":
     post:
       summary: Create a template in the token's organization

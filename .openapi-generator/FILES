@@ -3,11 +3,9 @@
 README.md
 git_push.sh
 shard.yml
-spec/api/court_cases_api_spec.cr
-spec/models/api_v1_court_cases_id_patch_request_court_case_spec.cr
-spec/models/api_v1_court_cases_id_patch_request_spec.cr
-spec/models/api_v1_matters_matter_id_court_cases_post_request_court_case_spec.cr
-spec/models/api_v1_matters_matter_id_court_cases_post_request_spec.cr
+spec/api/submissions_api_spec.cr
+spec/models/api_v1_documents_document_id_submissions_post_request_spec.cr
+spec/models/api_v1_submissions_id_correct_post_request_spec.cr
 spec/spec_helper.cr
 src/rightdocuments-client.cr
 src/rightdocuments-client/api/catalog_api.cr
@@ -17,6 +15,7 @@ src/rightdocuments-client/api/documents_api.cr
 src/rightdocuments-client/api/entities_api.cr
 src/rightdocuments-client/api/matters_api.cr
 src/rightdocuments-client/api/me_api.cr
+src/rightdocuments-client/api/submissions_api.cr
 src/rightdocuments-client/api/templates_api.cr
 src/rightdocuments-client/api_client.cr
 src/rightdocuments-client/api_error.cr
@@ -34,6 +33,7 @@ src/rightdocuments-client/models/api_v1_documents_document_id_deliveries_id_patc
 src/rightdocuments-client/models/api_v1_documents_document_id_deliveries_mail_post_request.cr
 src/rightdocuments-client/models/api_v1_documents_document_id_deliveries_post_request.cr
 src/rightdocuments-client/models/api_v1_documents_document_id_deliveries_post_request_delivery.cr
+src/rightdocuments-client/models/api_v1_documents_document_id_submissions_post_request.cr
 src/rightdocuments-client/models/api_v1_documents_id_patch_request.cr
 src/rightdocuments-client/models/api_v1_entities_get200_response.cr
 src/rightdocuments-client/models/api_v1_entities_get200_response_entities_inner.cr
@@ -54,6 +54,7 @@ src/rightdocuments-client/models/api_v1_matters_post_request_matter.cr
 src/rightdocuments-client/models/api_v1_me_get200_response.cr
 src/rightdocuments-client/models/api_v1_me_get200_response_organization.cr
 src/rightdocuments-client/models/api_v1_me_get200_response_user.cr
+src/rightdocuments-client/models/api_v1_submissions_id_correct_post_request.cr
 src/rightdocuments-client/models/api_v1_templates_get200_response.cr
 src/rightdocuments-client/models/api_v1_templates_get200_response_templates_inner.cr
 src/rightdocuments-client/models/api_v1_templates_id_get200_response.cr
