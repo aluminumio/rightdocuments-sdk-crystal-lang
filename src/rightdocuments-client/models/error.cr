@@ -34,9 +34,40 @@ module RightDocuments
     @[JSON::Field(key: "warnings", type: Array(ReviewWarning)?, nillable: true, emit_null: false)]
     property warnings : Array(ReviewWarning)?
 
+    # Workflow not started (422): the playbook's fit on the matter
+    @[JSON::Field(key: "fit", type: String?, nillable: true, emit_null: false)]
+    property fit : String?
+
+    # Workflow not started (422): the fit's reasons
+    @[JSON::Field(key: "reasons", type: Array(ApiV1MattersMatterIdWorkflowsGet200ResponsePlaybooksInnerAllOfReasonsInner)?, nillable: true, emit_null: false)]
+    property reasons : Array(ApiV1MattersMatterIdWorkflowsGet200ResponsePlaybooksInnerAllOfReasonsInner)?
+
+    class EnumAttributeValidator
+      getter datatype : String
+      getter allowable_values : Array(String)
+
+      def initialize(datatype, allowable_values)
+        @datatype = datatype
+        @allowable_values = allowable_values.map do |value|
+          case datatype.to_s
+          when /Integer/i
+            value.to_i
+          when /Float/i
+            value.to_f
+          else
+            value
+          end
+        end
+      end
+
+      def valid?(value)
+        !value || allowable_values.includes?(value)
+      end
+    end
+
     # Initializes the object
     # @param [Hash] attributes Model attributes in the form of hash
-    def initialize(@error : String, @message : String, @status : Int32, @errors : Hash(String, Array(String))?, @warnings : Array(ReviewWarning)?)
+    def initialize(@error : String, @message : String, @status : Int32, @errors : Hash(String, Array(String))?, @warnings : Array(ReviewWarning)?, @fit : String?, @reasons : Array(ApiV1MattersMatterIdWorkflowsGet200ResponsePlaybooksInnerAllOfReasonsInner)?)
     end
 
     # Show invalid properties with the reasons. Usually used together with valid?
@@ -49,7 +80,19 @@ module RightDocuments
     # Check to see if the all the properties in the model are valid
     # @return true if the model is valid
     def valid?
+      fit_validator = EnumAttributeValidator.new("String", ["fits", "unknown", "running", "does_not_fit"])
+      return false unless fit_validator.valid?(@fit)
       true
+    end
+
+    # Custom attribute writer method checking allowed values (enum).
+    # @param [Object] fit Object to be assigned
+    def fit=(fit)
+      validator = EnumAttributeValidator.new("String", ["fits", "unknown", "running", "does_not_fit"])
+      unless validator.valid?(fit)
+        raise ArgumentError.new("invalid value for \"fit\", must be one of #{validator.allowable_values}.")
+      end
+      @fit = fit
     end
 
     # Checks equality by comparing each attribute.
@@ -61,7 +104,9 @@ module RightDocuments
           message == o.message &&
           status == o.status &&
           errors == o.errors &&
-          warnings == o.warnings
+          warnings == o.warnings &&
+          fit == o.fit &&
+          reasons == o.reasons
     end
 
     # @see the `==` method
@@ -73,7 +118,7 @@ module RightDocuments
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [error, message, status, errors, warnings].hash
+      [error, message, status, errors, warnings, fit, reasons].hash
     end
 
     # Builds the object from hash

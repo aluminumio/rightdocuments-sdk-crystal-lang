@@ -2155,6 +2155,434 @@ paths:
             application/json:
               schema:
                 "$ref": "#/components/schemas/Error"
+  "/api/v1/playbooks":
+    get:
+      summary: List the litigation playbooks
+      description: 'Repository data, the same for every organization: the latest version
+        of each playbook and every version.'
+      tags:
+      - Workflows
+      security:
+      - bearer: []
+      - oauth2:
+        - documents:read
+      responses:
+        '200':
+          description: playbooks
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - playbooks
+                properties:
+                  playbooks:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                      - key
+                      - version
+                      - name
+                      - review_status
+                      - stub
+                      properties:
+                        key:
+                          type: string
+                          example: ca-superior-unlimited-civil
+                        version:
+                          type: string
+                          example: 0.1.0
+                          description: The latest version
+                        versions:
+                          type: array
+                          items:
+                            type: string
+                          description: Every version, newest first
+                        name:
+                          type: string
+                        description:
+                          type: string
+                          nullable: true
+                        review_status:
+                          type: string
+                          example: draft
+                          description: reviewed when an attorney reviewed this version
+                        reviewed_by:
+                          type: string
+                          nullable: true
+                        reviewed_on:
+                          type: string
+                          nullable: true
+                        stub:
+                          type: boolean
+                          description: 'A placeholder: another workflow starts it'
+                        run_belongs_to:
+                          type: string
+                          nullable: true
+                          description: court_case when a start needs a court case
+        '401':
+          description: no token
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+  "/api/v1/matters/{matter_id}/workflows":
+    parameters:
+    - name: matter_id
+      in: path
+      description: Matter UUID or number (e.g. 0004-001)
+      required: true
+      schema:
+        type: string
+    get:
+      summary: List a matter's workflows and the playbooks that fit it
+      description: 'The workflow runs, and the chooser: each startable playbook (latest
+        version, placeholders left out) with its fit on the matter (fits, unknown,
+        running, does_not_fit) and the reasons. The fit is advice.'
+      tags:
+      - Workflows
+      security:
+      - bearer: []
+      - oauth2:
+        - documents:read
+      responses:
+        '200':
+          description: workflows and fits
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - workflow_runs
+                - playbooks
+                properties:
+                  workflow_runs:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                      - id
+                      - name
+                      - playbook_key
+                      - playbook_version
+                      - status
+                      - started_at
+                      - open_steps
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        name:
+                          type: string
+                          example: Lawsuit · San Francisco Superior
+                        playbook_key:
+                          type: string
+                        playbook_version:
+                          type: string
+                          description: The pinned version
+                        status:
+                          type: string
+                          enum:
+                          - active
+                          - ended
+                        court_case_id:
+                          type: string
+                          format: uuid
+                          nullable: true
+                        started_at:
+                          type: string
+                          format: date-time
+                        started_by:
+                          type: string
+                          nullable: true
+                        ended_at:
+                          type: string
+                          format: date-time
+                          nullable: true
+                        open_steps:
+                          type: array
+                          description: 'Open steps of an active workflow: dated ones
+                            first, by date'
+                          items:
+                            type: object
+                            required:
+                            - step_key
+                            - name
+                            - status
+                            properties:
+                              step_key:
+                                type: string
+                              name:
+                                type: string
+                              party_id:
+                                type: string
+                                nullable: true
+                              actor:
+                                type: string
+                                nullable: true
+                                description: attorney, client, court, counterparty,
+                                  agency or anyone
+                              status:
+                                type: string
+                                enum:
+                                - active
+                                - waiting
+                              due_on:
+                                type: string
+                                format: date
+                                nullable: true
+                              deadline_label:
+                                type: string
+                                nullable: true
+                              deadline_trust:
+                                type: string
+                                nullable: true
+                                example: confirmed
+                  playbooks:
+                    type: array
+                    description: Fitting ones first
+                    items:
+                      allOf:
+                      - type: object
+                        required:
+                        - key
+                        - version
+                        - name
+                        - review_status
+                        - stub
+                        properties:
+                          key:
+                            type: string
+                            example: ca-superior-unlimited-civil
+                          version:
+                            type: string
+                            example: 0.1.0
+                            description: The latest version
+                          versions:
+                            type: array
+                            items:
+                              type: string
+                            description: Every version, newest first
+                          name:
+                            type: string
+                          description:
+                            type: string
+                            nullable: true
+                          review_status:
+                            type: string
+                            example: draft
+                            description: reviewed when an attorney reviewed this version
+                          reviewed_by:
+                            type: string
+                            nullable: true
+                          reviewed_on:
+                            type: string
+                            nullable: true
+                          stub:
+                            type: boolean
+                            description: 'A placeholder: another workflow starts it'
+                          run_belongs_to:
+                            type: string
+                            nullable: true
+                            description: court_case when a start needs a court case
+                      - type: object
+                        required:
+                        - fit
+                        - fit_word
+                        - startable
+                        - needs_court_case
+                        - reasons
+                        properties:
+                          fit:
+                            type: string
+                            enum:
+                            - fits
+                            - unknown
+                            - running
+                            - does_not_fit
+                          fit_word:
+                            type: string
+                            example: Not enough facts to tell
+                          startable:
+                            type: boolean
+                            description: Not a placeholder, the matter is open, not
+                              already running
+                          needs_court_case:
+                            type: boolean
+                          court_case_ids:
+                            type: array
+                            items:
+                              type: string
+                            description: The matter's court cases it fits
+                          active_run_ids:
+                            type: array
+                            items:
+                              type: string
+                          reasons:
+                            type: array
+                            items:
+                              type: object
+                              required:
+                              - result
+                              - text
+                              properties:
+                                result:
+                                  type: string
+                                  enum:
+                                  - ok
+                                  - 'no'
+                                  - unknown
+                                  - info
+                                text:
+                                  type: string
+        '404':
+          description: a matter of another organization
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+    post:
+      summary: Start a workflow on a matter
+      description: 'Starts a playbook version on the matter, as the web confirm page
+        does. The fit is advice: a playbook that does not fit can still be started.
+        Refused (422, with the fit and its reasons) for a placeholder, a closed matter,
+        a playbook that belongs to a court case when the matter has none (or several
+        and none is given), and a playbook already running on the matter (and court
+        case).'
+      tags:
+      - Workflows
+      security:
+      - bearer: []
+      - oauth2:
+        - documents:write
+      parameters: []
+      responses:
+        '201':
+          description: started
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - workflow_run
+                properties:
+                  workflow_run:
+                    type: object
+                    required:
+                    - id
+                    - name
+                    - playbook_key
+                    - playbook_version
+                    - status
+                    - started_at
+                    - open_steps
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                      name:
+                        type: string
+                        example: Lawsuit · San Francisco Superior
+                      playbook_key:
+                        type: string
+                      playbook_version:
+                        type: string
+                        description: The pinned version
+                      status:
+                        type: string
+                        enum:
+                        - active
+                        - ended
+                      court_case_id:
+                        type: string
+                        format: uuid
+                        nullable: true
+                      started_at:
+                        type: string
+                        format: date-time
+                      started_by:
+                        type: string
+                        nullable: true
+                      ended_at:
+                        type: string
+                        format: date-time
+                        nullable: true
+                      open_steps:
+                        type: array
+                        description: 'Open steps of an active workflow: dated ones
+                          first, by date'
+                        items:
+                          type: object
+                          required:
+                          - step_key
+                          - name
+                          - status
+                          properties:
+                            step_key:
+                              type: string
+                            name:
+                              type: string
+                            party_id:
+                              type: string
+                              nullable: true
+                            actor:
+                              type: string
+                              nullable: true
+                              description: attorney, client, court, counterparty,
+                                agency or anyone
+                            status:
+                              type: string
+                              enum:
+                              - active
+                              - waiting
+                            due_on:
+                              type: string
+                              format: date
+                              nullable: true
+                            deadline_label:
+                              type: string
+                              nullable: true
+                            deadline_trust:
+                              type: string
+                              nullable: true
+                              example: confirmed
+        '422':
+          description: 'refused: already running'
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '404':
+          description: unknown playbook version
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '403':
+          description: read-only token
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - playbook_key
+              properties:
+                playbook_key:
+                  type: string
+                  example: ca-superior-unlimited-civil
+                version:
+                  type: string
+                  description: 'The playbook version to pin (default: the latest)'
+                court_case_id:
+                  type: string
+                  description: 'Court case UUID or case number; for a playbook that
+                    belongs to a court case (default: the matter''s only case)'
 servers:
 - url: https://app.rightdocuments.com
 - url: http://localhost:3000
@@ -2201,6 +2629,32 @@ components:
             "$ref": "#/components/schemas/ReviewWarning"
           description: 'Not reviewed (422): the open review gates; unreviewed_reason
             overrides'
+        fit:
+          type: string
+          enum:
+          - fits
+          - unknown
+          - running
+          - does_not_fit
+          description: 'Workflow not started (422): the playbook''s fit on the matter'
+        reasons:
+          type: array
+          description: 'Workflow not started (422): the fit''s reasons'
+          items:
+            type: object
+            required:
+            - result
+            - text
+            properties:
+              result:
+                type: string
+                enum:
+                - ok
+                - 'no'
+                - unknown
+                - info
+              text:
+                type: string
     ReviewWarnings:
       type: object
       required:
