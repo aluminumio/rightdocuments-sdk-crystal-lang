@@ -277,7 +277,12 @@ paths:
         court''s stamped PDF) and filed_on, the open submission of the document in
         this case (or a new one) is accepted: the PDF becomes an asset of the document
         and its filed copy, and case_number and filed_on are written to the court
-        case with that document as the source.'
+        case with that document as the source. Review gates: while the matter''s lawsuit
+        workflow has an open review gate before the complaint (the attorney''s review
+        of this version, the client''s approval), the call is refused with 422 Not
+        reviewed unless the form field unreviewed_reason gives the reason to record
+        it anyway; the reason is kept with the submission and the 201 response lists
+        the open gates in warnings (empty when none).'
       tags:
       - Court cases
       security:
@@ -288,6 +293,10 @@ paths:
       responses:
         '201':
           description: the endorsed copy accepts the filing submitted earlier
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ReviewWarnings"
         '422':
           description: a document of another matter
           content:
@@ -1668,7 +1677,11 @@ paths:
         Nothing is proven until what comes back is recorded (POST /api/v1/submissions/{id}/accept).
         A court submission belongs to a court case of the document's matter (court_case
         may be left out when the matter has one). Times without an offset are read
-        in the authority's time zone (the court's calendar, or by jurisdiction).
+        in the authority's time zone (the court's calendar, or by jurisdiction). A
+        court submission of the complaint while a review gate before it is open (the
+        attorney's review, the client's approval) is refused with 422 Not reviewed
+        unless unreviewed_reason gives the reason; the 201 response lists the open
+        gates in warnings.
       tags:
       - Submissions
       security:
@@ -1679,6 +1692,10 @@ paths:
       responses:
         '201':
           description: submitted to the court
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ReviewWarnings"
         '422':
           description: an unknown recipient kind
           content:
@@ -1748,6 +1765,12 @@ paths:
                   type: string
                   description: A delivery of this document to link (a letter to a
                     party)
+                unreviewed_reason:
+                  type: string
+                  description: 'Record anyway: the reason to add a court submission
+                    of the complaint while a review gate before it is open. Kept with
+                    the submission; the response lists the open gates in warnings.
+                    Without it an open gate gives 422.'
   "/api/v1/submissions/{id}":
     parameters:
     - name: id
@@ -1782,6 +1805,10 @@ paths:
         type: string
     post:
       summary: Record the submission receipt (proves nothing)
+      description: 'Review gates: a receipt of a court submission of the complaint
+        whose review gate is open is refused with 422 Not reviewed unless the form
+        field unreviewed_reason gives the reason (or the submission was recorded anyway
+        with one); the 201 response lists the open gates in warnings.'
       tags:
       - Submissions
       security:
@@ -1792,6 +1819,10 @@ paths:
       responses:
         '201':
           description: receipt kept
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ReviewWarnings"
       requestBody:
         content:
           multipart/form-data:
@@ -1817,7 +1848,11 @@ paths:
         to the case); secretary_of_state: file_number, formation_date (defaults to
         the filed date for a state-filing document of a company without one); irs:
         ein. They are written with the document as their source. dry_run=true returns
-        the plan only.'
+        the plan only (with warnings and unreviewed_reason_needed). Review gates:
+        a court submission of the complaint whose review gate is open is refused with
+        422 Not reviewed unless the form field unreviewed_reason gives the reason
+        (or the submission was recorded anyway with one); the 201 response lists the
+        open gates in warnings.'
       tags:
       - Submissions
       security:
@@ -1828,6 +1863,10 @@ paths:
       responses:
         '201':
           description: 'accepted Sat Oct 10 at 11 p.m.: deemed filed Mon Oct 12'
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ReviewWarnings"
         '200':
           description: 'dry run: the plan, nothing written'
         '422':
@@ -2156,3 +2195,40 @@ components:
             type: array
             items:
               type: string
+        warnings:
+          type: array
+          items:
+            "$ref": "#/components/schemas/ReviewWarning"
+          description: 'Not reviewed (422): the open review gates; unreviewed_reason
+            overrides'
+    ReviewWarnings:
+      type: object
+      required:
+      - warnings
+      description: A recorded submission or filing; warnings lists the review gates
+        that were open when it was recorded anyway with unreviewed_reason (empty when
+        none was open).
+      properties:
+        warnings:
+          type: array
+          items:
+            "$ref": "#/components/schemas/ReviewWarning"
+    ReviewWarning:
+      type: object
+      description: 'An open review gate (an approval before a filing): the attorney''s
+        review of the document, or the client''s approval. Firm practice, not law.'
+      required:
+      - message
+      - gate
+      - gate_name
+      properties:
+        message:
+          type: string
+          example: 'Not reviewed: this version of “Complaint” has no attorney approval.'
+        gate:
+          type: string
+          example: review-complaint
+          description: The gate's step id in the playbook
+        gate_name:
+          type: string
+          example: You review and approve the final complaint

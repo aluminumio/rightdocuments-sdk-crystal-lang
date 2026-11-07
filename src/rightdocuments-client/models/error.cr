@@ -30,9 +30,13 @@ module RightDocuments
     @[JSON::Field(key: "errors", type: Hash(String, Array(String))?, nillable: true, emit_null: false)]
     property errors : Hash(String, Array(String))?
 
+    # Not reviewed (422): the open review gates; unreviewed_reason overrides
+    @[JSON::Field(key: "warnings", type: Array(ReviewWarning)?, nillable: true, emit_null: false)]
+    property warnings : Array(ReviewWarning)?
+
     # Initializes the object
     # @param [Hash] attributes Model attributes in the form of hash
-    def initialize(@error : String, @message : String, @status : Int32, @errors : Hash(String, Array(String))?)
+    def initialize(@error : String, @message : String, @status : Int32, @errors : Hash(String, Array(String))?, @warnings : Array(ReviewWarning)?)
     end
 
     # Show invalid properties with the reasons. Usually used together with valid?
@@ -56,7 +60,8 @@ module RightDocuments
           error == o.error &&
           message == o.message &&
           status == o.status &&
-          errors == o.errors
+          errors == o.errors &&
+          warnings == o.warnings
     end
 
     # @see the `==` method
@@ -68,7 +73,7 @@ module RightDocuments
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [error, message, status, errors].hash
+      [error, message, status, errors, warnings].hash
     end
 
     # Builds the object from hash

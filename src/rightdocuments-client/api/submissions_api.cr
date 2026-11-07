@@ -75,18 +75,18 @@ module RightDocuments
     end
 
     # Add a submission of the document
-    # Records that the document was sent to an authority or a party. Nothing is proven until what comes back is recorded (POST /api/v1/submissions/{id}/accept). A court submission belongs to a court case of the document's matter (court_case may be left out when the matter has one). Times without an offset are read in the authority's time zone (the court's calendar, or by jurisdiction).
+    # Records that the document was sent to an authority or a party. Nothing is proven until what comes back is recorded (POST /api/v1/submissions/{id}/accept). A court submission belongs to a court case of the document's matter (court_case may be left out when the matter has one). Times without an offset are read in the authority's time zone (the court's calendar, or by jurisdiction). A court submission of the complaint while a review gate before it is open (the attorney's review, the client's approval) is refused with 422 Not reviewed unless unreviewed_reason gives the reason; the 201 response lists the open gates in warnings.
     # @param document_id [String] Document UUID
-    # @return [nil]
+    # @return [ReviewWarnings]
     def api_v1_documents_document_id_submissions_post(document_id : String, api_v1_documents_document_id_submissions_post_request : ApiV1DocumentsDocumentIdSubmissionsPostRequest?)
-      api_v1_documents_document_id_submissions_post_with_http_info(document_id, api_v1_documents_document_id_submissions_post_request)
-      nil
+      data, _status_code, _headers = api_v1_documents_document_id_submissions_post_with_http_info(document_id, api_v1_documents_document_id_submissions_post_request)
+      data
     end
 
     # Add a submission of the document
-    # Records that the document was sent to an authority or a party. Nothing is proven until what comes back is recorded (POST /api/v1/submissions/{id}/accept). A court submission belongs to a court case of the document&#39;s matter (court_case may be left out when the matter has one). Times without an offset are read in the authority&#39;s time zone (the court&#39;s calendar, or by jurisdiction).
+    # Records that the document was sent to an authority or a party. Nothing is proven until what comes back is recorded (POST /api/v1/submissions/{id}/accept). A court submission belongs to a court case of the document&#39;s matter (court_case may be left out when the matter has one). Times without an offset are read in the authority&#39;s time zone (the court&#39;s calendar, or by jurisdiction). A court submission of the complaint while a review gate before it is open (the attorney&#39;s review, the client&#39;s approval) is refused with 422 Not reviewed unless unreviewed_reason gives the reason; the 201 response lists the open gates in warnings.
     # @param document_id [String] Document UUID
-    # @return [Array<(nil, Integer, Hash)>] nil, response status code and response headers
+    # @return [Array<(ReviewWarnings, Integer, Hash)>] ReviewWarnings data, response status code and response headers
     def api_v1_documents_document_id_submissions_post_with_http_info(document_id : String, api_v1_documents_document_id_submissions_post_request : ApiV1DocumentsDocumentIdSubmissionsPostRequest?)
       if @api_client.config.debugging
         Log.debug {"Calling API: SubmissionsApi.api_v1_documents_document_id_submissions_post ..."}
@@ -115,7 +115,7 @@ module RightDocuments
       post_body = api_v1_documents_document_id_submissions_post_request.to_json
 
       # return_type
-      return_type = nil
+      return_type = "ReviewWarnings"
 
       # auth_names
       auth_names = ["bearer"]
@@ -132,11 +132,11 @@ module RightDocuments
       if @api_client.config.debugging
         Log.debug {"API called: SubmissionsApi#api_v1_documents_document_id_submissions_post\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"}
       end
-      return nil, status_code, headers
+      return ReviewWarnings.from_json(data), status_code, headers
     end
 
     # Record the acceptance or the filed copy (proves the facts)
-    # returned: acceptance (the authority's confirmation; needs received_at), filed_copy (the stamped or endorsed copy, the default; becomes the document's filed copy and accepts an open submission with received_at or filed_on) or certified_copy (of an accepted submission). file is required. A court submission received electronically on a non-court day is deemed filed the next court day (CCP 1010.6(e)(3); CRC 2.259); outside the court's calendar the filed date stays empty with a warning. Facts: court: case_number (filed_on goes to the case); secretary_of_state: file_number, formation_date (defaults to the filed date for a state-filing document of a company without one); irs: ein. They are written with the document as their source. dry_run=true returns the plan only.
+    # returned: acceptance (the authority's confirmation; needs received_at), filed_copy (the stamped or endorsed copy, the default; becomes the document's filed copy and accepts an open submission with received_at or filed_on) or certified_copy (of an accepted submission). file is required. A court submission received electronically on a non-court day is deemed filed the next court day (CCP 1010.6(e)(3); CRC 2.259); outside the court's calendar the filed date stays empty with a warning. Facts: court: case_number (filed_on goes to the case); secretary_of_state: file_number, formation_date (defaults to the filed date for a state-filing document of a company without one); irs: ein. They are written with the document as their source. dry_run=true returns the plan only (with warnings and unreviewed_reason_needed). Review gates: a court submission of the complaint whose review gate is open is refused with 422 Not reviewed unless the form field unreviewed_reason gives the reason (or the submission was recorded anyway with one); the 201 response lists the open gates in warnings.
     # @param id [String] 
     # @return [nil]
     def api_v1_submissions_id_accept_post(id : String)
@@ -145,7 +145,7 @@ module RightDocuments
     end
 
     # Record the acceptance or the filed copy (proves the facts)
-    # returned: acceptance (the authority&#39;s confirmation; needs received_at), filed_copy (the stamped or endorsed copy, the default; becomes the document&#39;s filed copy and accepts an open submission with received_at or filed_on) or certified_copy (of an accepted submission). file is required. A court submission received electronically on a non-court day is deemed filed the next court day (CCP 1010.6(e)(3); CRC 2.259); outside the court&#39;s calendar the filed date stays empty with a warning. Facts: court: case_number (filed_on goes to the case); secretary_of_state: file_number, formation_date (defaults to the filed date for a state-filing document of a company without one); irs: ein. They are written with the document as their source. dry_run&#x3D;true returns the plan only.
+    # returned: acceptance (the authority&#39;s confirmation; needs received_at), filed_copy (the stamped or endorsed copy, the default; becomes the document&#39;s filed copy and accepts an open submission with received_at or filed_on) or certified_copy (of an accepted submission). file is required. A court submission received electronically on a non-court day is deemed filed the next court day (CCP 1010.6(e)(3); CRC 2.259); outside the court&#39;s calendar the filed date stays empty with a warning. Facts: court: case_number (filed_on goes to the case); secretary_of_state: file_number, formation_date (defaults to the filed date for a state-filing document of a company without one); irs: ein. They are written with the document as their source. dry_run&#x3D;true returns the plan only (with warnings and unreviewed_reason_needed). Review gates: a court submission of the complaint whose review gate is open is refused with 422 Not reviewed unless the form field unreviewed_reason gives the reason (or the submission was recorded anyway with one); the 201 response lists the open gates in warnings.
     # @param id [String] 
     # @return [Array<(nil, Integer, Hash)>] nil, response status code and response headers
     def api_v1_submissions_id_accept_post_with_http_info(id : String)
@@ -315,16 +315,18 @@ module RightDocuments
     end
 
     # Record the submission receipt (proves nothing)
+    # Review gates: a receipt of a court submission of the complaint whose review gate is open is refused with 422 Not reviewed unless the form field unreviewed_reason gives the reason (or the submission was recorded anyway with one); the 201 response lists the open gates in warnings.
     # @param id [String] 
-    # @return [nil]
+    # @return [ReviewWarnings]
     def api_v1_submissions_id_receipt_post(id : String)
-      api_v1_submissions_id_receipt_post_with_http_info(id)
-      nil
+      data, _status_code, _headers = api_v1_submissions_id_receipt_post_with_http_info(id)
+      data
     end
 
     # Record the submission receipt (proves nothing)
+    # Review gates: a receipt of a court submission of the complaint whose review gate is open is refused with 422 Not reviewed unless the form field unreviewed_reason gives the reason (or the submission was recorded anyway with one); the 201 response lists the open gates in warnings.
     # @param id [String] 
-    # @return [Array<(nil, Integer, Hash)>] nil, response status code and response headers
+    # @return [Array<(ReviewWarnings, Integer, Hash)>] ReviewWarnings data, response status code and response headers
     def api_v1_submissions_id_receipt_post_with_http_info(id : String)
       if @api_client.config.debugging
         Log.debug {"Calling API: SubmissionsApi.api_v1_submissions_id_receipt_post ..."}
@@ -341,6 +343,8 @@ module RightDocuments
 
       # header parameters
       header_params = Hash(String, String).new
+      # HTTP header "Accept" (if needed)
+      header_params["Accept"] = @api_client.select_header_accept(["application/json"])
       # HTTP header "Content-Type"
       header_params["Content-Type"] = @api_client.select_header_content_type(["multipart/form-data"])
 
@@ -351,7 +355,7 @@ module RightDocuments
       post_body = nil
 
       # return_type
-      return_type = nil
+      return_type = "ReviewWarnings"
 
       # auth_names
       auth_names = ["bearer"]
@@ -368,7 +372,7 @@ module RightDocuments
       if @api_client.config.debugging
         Log.debug {"API called: SubmissionsApi#api_v1_submissions_id_receipt_post\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"}
       end
-      return nil, status_code, headers
+      return ReviewWarnings.from_json(data), status_code, headers
     end
 
     # Record a rejection (proves nothing; resubmit with a new submission)

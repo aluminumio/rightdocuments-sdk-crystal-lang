@@ -61,6 +61,10 @@ module RightDocuments
     @[JSON::Field(key: "delivery_id", type: String?, nillable: true, emit_null: false)]
     property delivery_id : String?
 
+    # Record anyway: the reason to add a court submission of the complaint while a review gate before it is open. Kept with the submission; the response lists the open gates in warnings. Without it an open gate gives 422.
+    @[JSON::Field(key: "unreviewed_reason", type: String?, nillable: true, emit_null: false)]
+    property unreviewed_reason : String?
+
     class EnumAttributeValidator
       getter datatype : String
       getter allowable_values : Array(String)
@@ -86,7 +90,7 @@ module RightDocuments
 
     # Initializes the object
     # @param [Hash] attributes Model attributes in the form of hash
-    def initialize(@recipient_kind : String, @recipient_name : String?, @jurisdiction : String?, @channel : String?, @channel_provider : String?, @submitted_at : String?, @reference : String?, @fees : String?, @notes : String?, @time_zone : String?, @court_case : String?, @filing_kind : String?, @delivery_id : String?)
+    def initialize(@recipient_kind : String, @recipient_name : String?, @jurisdiction : String?, @channel : String?, @channel_provider : String?, @submitted_at : String?, @reference : String?, @fees : String?, @notes : String?, @time_zone : String?, @court_case : String?, @filing_kind : String?, @delivery_id : String?, @unreviewed_reason : String?)
     end
 
     # Show invalid properties with the reasons. Usually used together with valid?
@@ -155,7 +159,8 @@ module RightDocuments
           time_zone == o.time_zone &&
           court_case == o.court_case &&
           filing_kind == o.filing_kind &&
-          delivery_id == o.delivery_id
+          delivery_id == o.delivery_id &&
+          unreviewed_reason == o.unreviewed_reason
     end
 
     # @see the `==` method
@@ -167,7 +172,7 @@ module RightDocuments
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [recipient_kind, recipient_name, jurisdiction, channel, channel_provider, submitted_at, reference, fees, notes, time_zone, court_case, filing_kind, delivery_id].hash
+      [recipient_kind, recipient_name, jurisdiction, channel, channel_provider, submitted_at, reference, fees, notes, time_zone, court_case, filing_kind, delivery_id, unreviewed_reason].hash
     end
 
     # Builds the object from hash

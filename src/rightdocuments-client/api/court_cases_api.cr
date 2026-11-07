@@ -73,18 +73,18 @@ module RightDocuments
     end
 
     # Record a court filing (a court submission)
-    # Kept for older clients; new clients use POST /api/v1/documents/{id}/submissions and POST /api/v1/submissions/{id}/accept. document is the as-filed copy, already filed under the case's matter. Without endorsed a court submission is added (status submitted) and case_number / filed_on are refused. With endorsed (the court's stamped PDF) and filed_on, the open submission of the document in this case (or a new one) is accepted: the PDF becomes an asset of the document and its filed copy, and case_number and filed_on are written to the court case with that document as the source.
+    # Kept for older clients; new clients use POST /api/v1/documents/{id}/submissions and POST /api/v1/submissions/{id}/accept. document is the as-filed copy, already filed under the case's matter. Without endorsed a court submission is added (status submitted) and case_number / filed_on are refused. With endorsed (the court's stamped PDF) and filed_on, the open submission of the document in this case (or a new one) is accepted: the PDF becomes an asset of the document and its filed copy, and case_number and filed_on are written to the court case with that document as the source. Review gates: while the matter's lawsuit workflow has an open review gate before the complaint (the attorney's review of this version, the client's approval), the call is refused with 422 Not reviewed unless the form field unreviewed_reason gives the reason to record it anyway; the reason is kept with the submission and the 201 response lists the open gates in warnings (empty when none).
     # @param court_case_id [String] Court case UUID, its case number, or the matter number when the matter has one case
-    # @return [nil]
+    # @return [ReviewWarnings]
     def api_v1_court_cases_court_case_id_filings_post(court_case_id : String)
-      api_v1_court_cases_court_case_id_filings_post_with_http_info(court_case_id)
-      nil
+      data, _status_code, _headers = api_v1_court_cases_court_case_id_filings_post_with_http_info(court_case_id)
+      data
     end
 
     # Record a court filing (a court submission)
-    # Kept for older clients; new clients use POST /api/v1/documents/{id}/submissions and POST /api/v1/submissions/{id}/accept. document is the as-filed copy, already filed under the case&#39;s matter. Without endorsed a court submission is added (status submitted) and case_number / filed_on are refused. With endorsed (the court&#39;s stamped PDF) and filed_on, the open submission of the document in this case (or a new one) is accepted: the PDF becomes an asset of the document and its filed copy, and case_number and filed_on are written to the court case with that document as the source.
+    # Kept for older clients; new clients use POST /api/v1/documents/{id}/submissions and POST /api/v1/submissions/{id}/accept. document is the as-filed copy, already filed under the case&#39;s matter. Without endorsed a court submission is added (status submitted) and case_number / filed_on are refused. With endorsed (the court&#39;s stamped PDF) and filed_on, the open submission of the document in this case (or a new one) is accepted: the PDF becomes an asset of the document and its filed copy, and case_number and filed_on are written to the court case with that document as the source. Review gates: while the matter&#39;s lawsuit workflow has an open review gate before the complaint (the attorney&#39;s review of this version, the client&#39;s approval), the call is refused with 422 Not reviewed unless the form field unreviewed_reason gives the reason to record it anyway; the reason is kept with the submission and the 201 response lists the open gates in warnings (empty when none).
     # @param court_case_id [String] Court case UUID, its case number, or the matter number when the matter has one case
-    # @return [Array<(nil, Integer, Hash)>] nil, response status code and response headers
+    # @return [Array<(ReviewWarnings, Integer, Hash)>] ReviewWarnings data, response status code and response headers
     def api_v1_court_cases_court_case_id_filings_post_with_http_info(court_case_id : String)
       if @api_client.config.debugging
         Log.debug {"Calling API: CourtCasesApi.api_v1_court_cases_court_case_id_filings_post ..."}
@@ -113,7 +113,7 @@ module RightDocuments
       post_body = nil
 
       # return_type
-      return_type = nil
+      return_type = "ReviewWarnings"
 
       # auth_names
       auth_names = ["bearer"]
@@ -130,7 +130,7 @@ module RightDocuments
       if @api_client.config.debugging
         Log.debug {"API called: CourtCasesApi#api_v1_court_cases_court_case_id_filings_post\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"}
       end
-      return nil, status_code, headers
+      return ReviewWarnings.from_json(data), status_code, headers
     end
 
     # Show a court case with its filings and the source of each fact
